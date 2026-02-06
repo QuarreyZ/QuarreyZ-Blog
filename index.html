@@ -1,74 +1,1012 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>发布页</title>
-    <style>
-        :root {
-            /* 模拟 iOS 26 可能的极简美学色调 */
-            --bg-color: #ffffff;
-            --text-color: #1d1d1f;
-            --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>quarrey-z 的博客</title>
+  <meta name="description" content="quarrey-z 的博客" />
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --bg-2: #ffffff;
+      --ink: #111114;
+      --muted: #6b707c;
+      --accent: #0a84ff;
+      --accent-soft: rgba(10, 132, 255, 0.12);
+      --glass: rgba(255, 255, 255, 0.8);
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --hairline: rgba(15, 20, 45, 0.08);
+      --shadow: 0 18px 40px rgba(15, 20, 45, 0.12);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --font-sans: "SF Pro Rounded", "SF Pro Display", "SF Pro Text", -apple-system, "Helvetica Neue", sans-serif;
+      --font-mono: "SF Mono", "JetBrains Mono", "Menlo", monospace;
+    }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #000000;
-                --text-color: #f5f5f7;
-            }
-        }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0b0f;
+        --bg-2: #121218;
+        --ink: #f4f5f9;
+        --muted: #9aa0ad;
+        --accent: #5aa9ff;
+        --accent-soft: rgba(90, 169, 255, 0.16);
+        --glass: rgba(18, 18, 24, 0.78);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --hairline: rgba(255, 255, 255, 0.08);
+        --shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+      }
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-family);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            /* 适配 iPhone 底部横条和刘海屏 */
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-            text-align: center;
-            overflow: hidden;
-        }
+    body {
+      min-height: 100vh;
+      font-family: var(--font-sans);
+      color: var(--ink);
+      background: var(--bg);
+      padding: env(safe-area-inset-top) env(safe-area-inset-right)
+        env(safe-area-inset-bottom) env(safe-area-inset-left);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
 
-        .content-wrapper {
-            width: 90%;
-            max-width: 600px;
-            animation: fadeIn 1.2s ease-out;
-        }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            word-wrap: break-word;
-        }
+    .page {
+      max-width: 1200px;
+      margin: 32px auto 80px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 28px;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 26px 28px;
+      border-radius: var(--radius);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(28px);
+      box-shadow: var(--shadow);
+      animation: floatIn 0.9s ease-out;
+    }
 
-        /* 针对不同屏幕尺寸的微调 */
-        @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; }
-        }
-    </style>
+    header h1 {
+      font-size: clamp(1.8rem, 2.6vw, 2.6rem);
+      letter-spacing: -0.02em;
+      font-weight: 600;
+    }
+
+    header .subtitle {
+      color: var(--muted);
+      font-size: 0.98rem;
+      margin-top: 6px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .panel {
+      border-radius: var(--radius);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      animation: floatIn 1.2s ease-out;
+    }
+
+    .search-box {
+      padding: 16px 18px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--hairline);
+      color: var(--ink);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .folder-list,
+    .post-list {
+      padding: 18px;
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .folder-item,
+    .post-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .folder-item:hover,
+    .post-item:hover {
+      background: var(--accent-soft);
+      transform: translateY(-2px);
+    }
+
+    .folder-item.active,
+    .post-item.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .cover-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: rgba(10, 132, 255, 0.12);
+    }
+
+    main {
+      padding: 30px 34px;
+      animation: floatIn 1.4s ease-out;
+    }
+
+    .post-cover {
+      width: 100%;
+      border-radius: var(--radius);
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      margin-bottom: 24px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .post-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .content {
+      line-height: 1.7;
+      font-size: 1.02rem;
+    }
+
+    .content h1,
+    .content h2,
+    .content h3,
+    .content h4 {
+      margin: 26px 0 12px;
+    }
+
+    .content p {
+      margin: 12px 0;
+    }
+
+    .content ul,
+    .content ol {
+      padding-left: 1.4em;
+      margin: 12px 0 12px 6px;
+    }
+
+    .content li {
+      margin: 6px 0;
+    }
+
+    .content pre {
+      background: #0f111a;
+      color: #eef1f7;
+      padding: 18px;
+      border-radius: 16px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      margin: 14px 0 18px;
+    }
+
+    .content code {
+      font-family: var(--font-mono);
+    }
+
+    .content img,
+    .content video {
+      max-width: 100%;
+      border-radius: 16px;
+      margin: 14px 0;
+    }
+
+    .content figure {
+      margin: 16px 0 22px;
+    }
+
+    .content figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      text-align: center;
+    }
+
+    .content .embed {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      margin: 16px 0 22px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(10, 132, 255, 0.08);
+      border: 1px solid var(--hairline);
+    }
+
+    .content .embed iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .content blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      color: var(--muted);
+      margin: 18px 0;
+    }
+
+    .content a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 3px;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 1rem;
+      text-align: center;
+      padding: 60px 0;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        margin-top: 18px;
+        padding: 0 16px;
+      }
+
+      main {
+        padding: 24px;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
 </head>
 <body>
+  <div class="page">
+    <header>
+      <div>
+        <h1>Quarrey-Z Blog</h1>
+      </div>
+      <div class="header-actions">
+        <span class="pill">自动索引</span>
+        <span class="pill" id="status-pill">正在扫描</span>
+      </div>
+    </header>
 
-    <div class="content-wrapper">
-        <h1>松鼠的个人博客，正在施工中</h1>
-    </div>
+    <aside class="sidebar">
+      <div class="panel" style="padding: 16px;">
+        <input id="search" class="search-box" placeholder="搜索标题或路径" />
+      </div>
 
+      <div class="panel folder-list">
+        <div class="section-title">文件夹</div>
+        <div id="folder-items"></div>
+      </div>
+
+      <div class="panel post-list">
+        <div class="section-title">文章</div>
+        <div id="post-items"></div>
+      </div>
+    </aside>
+
+    <main class="panel">
+      <div id="post-view" class="content">
+        <div class="empty-state">请选择一篇文章，或在本目录放入 Markdown。</div>
+        <div class="footer-note">资源文件夹请命名为 <code>__assets</code>，不会被继续扫描。</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
+  <script>
+    const ASSET_DIR_NAME = "__assets";
+    const PACK_FILE = "pack.json";
+    const SUPPORTED_IMAGE_EXT = ["png", "jpg", "jpeg", "webp", "avif", "gif"];
+    const SUPPORTED_VIDEO_EXT = ["mp4", "webm", "mov"];
+
+    const statusPill = document.getElementById("status-pill");
+    const folderListEl = document.getElementById("folder-items");
+    const postListEl = document.getElementById("post-items");
+    const postViewEl = document.getElementById("post-view");
+    const searchInput = document.getElementById("search");
+
+    const state = {
+      folders: [],
+      posts: [],
+      selectedFolder: null,
+      selectedPost: null,
+      cache: new Map(),
+      preloadLinks: new Set()
+    };
+
+    marked.setOptions({
+      breaks: true,
+      langPrefix: "language-",
+      highlight: function(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        return hljs.highlightAuto(code).value;
+      }
+    });
+
+    function enhanceCodeBlocks(container) {
+      const blocks = Array.from(container.querySelectorAll("pre code"));
+      blocks.forEach(block => {
+        if (!block.classList.contains("hljs")) {
+          block.classList.add("hljs");
+        }
+        try {
+          hljs.highlightElement(block);
+        } catch (err) {
+          // ignore highlight failures
+        }
+      });
+    }
+
+    function setStatus(text) {
+      statusPill.textContent = text;
+    }
+
+    function normalizePath(path) {
+      const cleaned = path.replace(/\\+/g, "/").replace(/\/+$/, "");
+      const withoutDot = cleaned.replace(/^\.\/+/, "");
+      return withoutDot === "" ? "." : withoutDot;
+    }
+
+    function normalizeQuery(query) {
+      if (!query) return "";
+      return query.trim().replace(/\\+/g, "/").replace(/^\.\/+/, "").toLowerCase();
+    }
+
+    async function fetchPack(path) {
+      const cleanPath = normalizePath(path);
+      const packPath = cleanPath === "." ? `./${PACK_FILE}` : `${cleanPath}/${PACK_FILE}`;
+      try {
+        const res = await fetch(packPath, { cache: "no-store" });
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (err) {
+        return null;
+      }
+    }
+
+    async function loadPackTree(path) {
+      const queue = [{ path: normalizePath(path), depth: 0 }];
+      const seen = new Set();
+      const results = [];
+
+      while (queue.length) {
+        const current = queue.shift();
+        if (!current || seen.has(current.path)) continue;
+        seen.add(current.path);
+
+        const pack = await fetchPack(current.path);
+        if (!pack) continue;
+
+        const basePath = current.path === "." ? "." : current.path;
+        const blogs = Array.isArray(pack.blog) ? pack.blog : [];
+        const dics = Array.isArray(pack.dic) ? pack.dic : [];
+
+        blogs.forEach(item => {
+          if (!item) return;
+          const name = String(item).trim();
+          if (!name) return;
+          const fileName = name.endsWith(".md") ? name : `${name}.md`;
+          const filePath = normalizePath(`${basePath}/${fileName}`);
+          results.push({ type: "file", path: filePath, depth: current.depth });
+        });
+
+        dics.forEach(item => {
+          if (!item) return;
+          const name = String(item).replace(/\/+$/, "").trim();
+          if (!name || name === ASSET_DIR_NAME) return;
+          const dirPath = normalizePath(`${basePath}/${name}`);
+          results.push({ type: "dir", path: dirPath, depth: current.depth + 1 });
+          queue.push({ path: dirPath, depth: current.depth + 1 });
+        });
+      }
+
+      return results;
+    }
+
+    async function exists(path) {
+      try {
+        const res = await fetch(path, { method: "HEAD" });
+        return res.ok;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    async function findCover(basePath, baseName) {
+      const names = Array.isArray(baseName) ? baseName : [baseName];
+      for (const name of names) {
+        for (const ext of SUPPORTED_IMAGE_EXT) {
+          const candidate = `${basePath}/${ASSET_DIR_NAME}/${name}.${ext}`;
+          if (await exists(candidate)) return candidate;
+        }
+      }
+      return null;
+    }
+
+    function ensurePreload(url, asType) {
+      if (!url || state.preloadLinks.has(url)) return;
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = asType;
+      link.href = url;
+      document.head.appendChild(link);
+      state.preloadLinks.add(url);
+    }
+
+    function extractMediaUrls(markdown, basePath) {
+      const urls = [];
+      const imageRegex = /!\[[^\]]*\]\(([^)]+)\)/g;
+      const videoRegex = /<video[^>]*src=["']([^"']+)["'][^>]*>/g;
+      const sourceRegex = /<source[^>]*src=["']([^"']+)["'][^>]*>/g;
+      let match;
+      while ((match = imageRegex.exec(markdown))) {
+        urls.push(resolvePath(basePath, match[1]));
+      }
+      while ((match = videoRegex.exec(markdown))) {
+        urls.push(resolvePath(basePath, match[1]));
+      }
+      while ((match = sourceRegex.exec(markdown))) {
+        urls.push(resolvePath(basePath, match[1]));
+      }
+      const directMedia = markdown.match(/\b[^\s)]+\.(mp4|webm|mov)\b/gi) || [];
+      directMedia.forEach(url => urls.push(resolvePath(basePath, url)));
+      return urls;
+    }
+
+    function applyFootnotes(markdown) {
+      const lines = markdown.split(/\r?\n/);
+      const defs = new Map();
+      const output = [];
+      let inFence = false;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const fenceMatch = line.match(/^```|^~~~$/);
+        if (fenceMatch) {
+          inFence = !inFence;
+          output.push(line);
+          continue;
+        }
+        if (!inFence) {
+          const defMatch = line.match(/^\[\^([^\]]+)\]:\s*(.+)$/);
+          if (defMatch) {
+            defs.set(defMatch[1], defMatch[2]);
+            continue;
+          }
+        }
+        output.push(line);
+      }
+
+      if (!defs.size) return { markdown, footnotesHtml: "" };
+
+      const replaced = output.join("\n").replace(/\[\^([^\]]+)\]/g, (match, id) => {
+        if (!defs.has(id)) return match;
+        return `<sup class="footnote-ref"><a href="#fn-${id}" id="fnref-${id}">[${id}]</a></sup>`;
+      });
+
+      const items = Array.from(defs.entries())
+        .map(([id, text]) => `<li id="fn-${id}">${text} <a href="#fnref-${id}">↩</a></li>`)
+        .join("");
+      const footnotesHtml = `<section class="footnotes"><hr><ol>${items}</ol></section>`;
+
+      return { markdown: replaced, footnotesHtml };
+    }
+
+    function resolvePath(basePath, url) {
+      if (!url) return url;
+      if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/")) return url;
+      return normalizePath(basePath + "/" + url);
+    }
+
+    function wrapWithCaption(node, caption) {
+      if (!caption) return;
+      const parent = node.parentNode;
+      if (!parent) return;
+      const figure = document.createElement("figure");
+      const figcaption = document.createElement("figcaption");
+      figcaption.textContent = caption;
+      parent.replaceChild(figure, node);
+      figure.appendChild(node);
+      figure.appendChild(figcaption);
+    }
+
+    function enhanceCaptions(container) {
+      const images = Array.from(container.querySelectorAll("img"));
+      images.forEach(img => {
+        const caption = img.getAttribute("title") || img.getAttribute("alt");
+        if (caption) wrapWithCaption(img, caption);
+      });
+
+      const videos = Array.from(container.querySelectorAll("video"));
+      videos.forEach(video => {
+        const caption =
+          video.getAttribute("title") ||
+          video.getAttribute("data-caption") ||
+          video.getAttribute("aria-label");
+        if (caption) wrapWithCaption(video, caption);
+      });
+
+      const embeds = Array.from(container.querySelectorAll(".embed"));
+      embeds.forEach(embed => {
+        const caption = embed.dataset.caption;
+        if (caption) wrapWithCaption(embed, caption);
+      });
+    }
+
+    function rewriteRelativeUrls(container, basePath) {
+      const elements = container.querySelectorAll("img, video, source, a");
+      elements.forEach(el => {
+        const attr = el.tagName.toLowerCase() === "a" ? "href" : "src";
+        const raw = el.getAttribute(attr);
+        if (!raw) return;
+        const rewritten = resolvePath(basePath, raw);
+        if (rewritten !== raw) {
+          el.setAttribute(attr, rewritten);
+        }
+      });
+    }
+
+    function extractYouTubeId(url) {
+      try {
+        const u = new URL(url);
+        if (u.hostname === "youtu.be") {
+          return u.pathname.replace("/", "");
+        }
+        if (u.hostname.includes("youtube.com")) {
+          if (u.pathname === "/watch") return u.searchParams.get("v");
+          if (u.pathname.startsWith("/embed/")) return u.pathname.split("/embed/")[1];
+          if (u.pathname.startsWith("/shorts/")) return u.pathname.split("/shorts/")[1];
+        }
+      } catch (err) {
+        return null;
+      }
+      return null;
+    }
+
+    function extractBilibiliId(url) {
+      try {
+        const u = new URL(url);
+        if (!u.hostname.includes("bilibili.com")) return null;
+        const bvidMatch = u.pathname.match(/\/video\/(BV[0-9A-Za-z]+)/);
+        if (bvidMatch) return { type: "bvid", value: bvidMatch[1] };
+        const aidMatch = u.pathname.match(/\/video\/(av\\d+)/);
+        if (aidMatch) return { type: "aid", value: aidMatch[1].replace("av", "") };
+        const bvidParam = u.searchParams.get("bvid");
+        if (bvidParam) return { type: "bvid", value: bvidParam };
+        const aidParam = u.searchParams.get("aid");
+        if (aidParam) return { type: "aid", value: aidParam };
+      } catch (err) {
+        return null;
+      }
+      return null;
+    }
+
+    function enhanceEmbeds(container) {
+      const links = Array.from(container.querySelectorAll("a"));
+      links.forEach(link => {
+        const href = link.getAttribute("href");
+        if (!href) return;
+        const ytId = extractYouTubeId(href);
+        const bili = extractBilibiliId(href);
+        if (!ytId && !bili) return;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "embed";
+        const caption = link.textContent.trim();
+        if (caption && caption !== href) {
+          wrapper.dataset.caption = caption;
+        }
+        const iframe = document.createElement("iframe");
+        iframe.setAttribute("loading", "lazy");
+        iframe.setAttribute("allowfullscreen", "true");
+        iframe.setAttribute(
+          "allow",
+          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        );
+        if (ytId) {
+          iframe.src = `https://www.youtube.com/embed/${ytId}`;
+        } else if (bili && bili.type === "bvid") {
+          iframe.src = `https://player.bilibili.com/player.html?bvid=${bili.value}&page=1&high_quality=1&danmaku=0`;
+        } else if (bili && bili.type === "aid") {
+          iframe.src = `https://player.bilibili.com/player.html?aid=${bili.value}&page=1&high_quality=1&danmaku=0`;
+        }
+        wrapper.appendChild(iframe);
+        link.replaceWith(wrapper);
+      });
+    }
+
+    function extractBilibiliFromText(text) {
+      if (!text) return null;
+      const bvidMatch = text.match(/\b(BV[0-9A-Za-z]{10})\b/);
+      if (bvidMatch) return { type: "bvid", value: bvidMatch[1] };
+      const aidMatch = text.match(/\bav(\d+)\b/i);
+      if (aidMatch) return { type: "aid", value: aidMatch[1] };
+      return null;
+    }
+
+    function enhancePlainBilibili(container) {
+      const blocks = Array.from(container.querySelectorAll("p, li"));
+      blocks.forEach(block => {
+        if (block.querySelector("a, img, video, iframe")) return;
+        const text = block.textContent.trim();
+        const bili = extractBilibiliFromText(text);
+        if (!bili) return;
+        const wrapper = document.createElement("div");
+        wrapper.className = "embed";
+        wrapper.dataset.caption = text;
+        const iframe = document.createElement("iframe");
+        iframe.setAttribute("loading", "lazy");
+        iframe.setAttribute("allowfullscreen", "true");
+        iframe.setAttribute(
+          "allow",
+          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        );
+        if (bili.type === "bvid") {
+          iframe.src = `https://player.bilibili.com/player.html?bvid=${bili.value}&page=1&high_quality=1&danmaku=0`;
+        } else {
+          iframe.src = `https://player.bilibili.com/player.html?aid=${bili.value}&page=1&high_quality=1&danmaku=0`;
+        }
+        wrapper.appendChild(iframe);
+        block.replaceWith(wrapper);
+      });
+    }
+
+    function extractYouTubeFromText(text) {
+      if (!text) return null;
+      const trimmed = text.trim();
+      if (/^[0-9A-Za-z_-]{11}$/.test(trimmed)) return trimmed;
+      const match = trimmed.match(/\b([0-9A-Za-z_-]{11})\b/);
+      return match ? match[1] : null;
+    }
+
+    function enhancePlainYouTube(container) {
+      const blocks = Array.from(container.querySelectorAll("p, li"));
+      blocks.forEach(block => {
+        if (block.querySelector("a, img, video, iframe")) return;
+        const ytId = extractYouTubeFromText(block.textContent);
+        if (!ytId) return;
+        const wrapper = document.createElement("div");
+        wrapper.className = "embed";
+        wrapper.dataset.caption = ytId;
+        const iframe = document.createElement("iframe");
+        iframe.setAttribute("loading", "lazy");
+        iframe.setAttribute("allowfullscreen", "true");
+        iframe.setAttribute(
+          "allow",
+          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        );
+        iframe.src = `https://www.youtube.com/embed/${ytId}`;
+        wrapper.appendChild(iframe);
+        block.replaceWith(wrapper);
+      });
+    }
+
+    function groupPosts(entries) {
+      const folders = new Map();
+      const posts = [];
+      entries.forEach(entry => {
+        if (entry.type === "dir") {
+          const folderPath = normalizePath(entry.path);
+          const folderName = folderPath.split("/").filter(Boolean).pop() || "Quarrey";
+          if (!folders.has(folderPath)) {
+            folders.set(folderPath, {
+              path: folderPath,
+              name: folderName,
+              cover: null,
+              depth: entry.depth || 0
+            });
+          }
+        }
+      });
+
+      entries.forEach(entry => {
+        if (entry.type !== "file") return;
+        const parts = normalizePath(entry.path).split("/");
+        const fileName = parts.pop();
+        const folderPath = parts.join("/") || ".";
+        const folderName = folderPath.split("/").filter(Boolean).pop() || "Quarrey";
+        if (!folders.has(folderPath)) {
+          folders.set(folderPath, {
+            path: folderPath,
+            name: folderName,
+            cover: null,
+            depth: entry.depth || 0
+          });
+        }
+        posts.push({
+          path: normalizePath(entry.path),
+          name: fileName.replace(/\.md$/, ""),
+          folderPath
+        });
+      });
+
+      const folderList = Array.from(folders.values()).sort((a, b) => {
+        if (a.depth !== b.depth) return a.depth - b.depth;
+        return a.name.localeCompare(b.name, "zh-Hans-CN");
+      });
+
+      return { folders: folderList, posts };
+    }
+
+    async function enrichCovers(data) {
+      for (const folder of data.folders) {
+        const folderName = folder.path.split("/").filter(Boolean).pop() || "root";
+        const coverNames = folder.path === "." ? ["Quarrey", "root"] : [folderName];
+        folder.cover = await findCover(folder.path, coverNames);
+        if (folder.cover) ensurePreload(folder.cover, "image");
+      }
+      for (const post of data.posts) {
+        const baseName = post.name;
+        post.cover = await findCover(post.folderPath, baseName);
+        if (post.cover) ensurePreload(post.cover, "image");
+      }
+      return data;
+    }
+
+    function renderFolders() {
+      folderListEl.innerHTML = "";
+      state.folders.forEach(folder => {
+        const item = document.createElement("div");
+        item.className = "folder-item" + (state.selectedFolder === folder.path ? " active" : "");
+        item.style.setProperty("--depth", folder.depth || 0);
+        item.style.paddingLeft = `calc(14px + ${(folder.depth || 0) * 14}px)`;
+        item.innerHTML = `
+          <img class="cover-thumb" src="${folder.cover || ""}" alt="" />
+          <div>
+            <div>${folder.name}</div>
+            <div style="font-size:0.8rem;color:var(--muted);">${folder.path === "." ? "Quarrey" : folder.path}</div>
+          </div>
+        `;
+        item.addEventListener("click", () => {
+          state.selectedFolder = folder.path;
+          renderFolders();
+          renderPosts();
+        });
+        folderListEl.appendChild(item);
+      });
+    }
+
+    function renderPosts() {
+      postListEl.innerHTML = "";
+      const query = normalizeQuery(searchInput.value);
+      const posts = state.posts.filter(post => {
+        const matchFolder = state.selectedFolder
+          ? post.folderPath === state.selectedFolder ||
+            post.folderPath.startsWith(`${state.selectedFolder}/`)
+          : true;
+        const searchablePath = normalizeQuery(post.path);
+        const searchableFolder = normalizeQuery(post.folderPath === "." ? "Quarrey" : post.folderPath);
+        const matchQuery =
+          !query ||
+          post.name.toLowerCase().includes(query) ||
+          searchablePath.includes(query) ||
+          searchableFolder.includes(query);
+        return matchFolder && matchQuery;
+      });
+      posts.forEach(post => {
+        const item = document.createElement("div");
+        item.className = "post-item" + (state.selectedPost && state.selectedPost.path === post.path ? " active" : "");
+        item.innerHTML = `
+          <img class="cover-thumb" src="${post.cover || ""}" alt="" />
+          <div>
+            <div>${post.name}</div>
+            <div style="font-size:0.8rem;color:var(--muted);">${post.folderPath === "." ? "Quarrey" : post.folderPath}</div>
+          </div>
+        `;
+        item.addEventListener("click", () => loadPost(post));
+        postListEl.appendChild(item);
+      });
+      if (!posts.length) {
+        postListEl.innerHTML = `<div class="empty-state">没有匹配的文章</div>`;
+      }
+    }
+
+    async function loadPost(post) {
+      state.selectedPost = post;
+      renderPosts();
+      setStatus("加载中");
+      const markdown = await fetchMarkdown(post.path);
+      if (!markdown) {
+        postViewEl.innerHTML = `<div class="empty-state">无法读取 ${post.path}</div>`;
+        setStatus("读取失败");
+        return;
+      }
+      const basePath = post.path.split("/").slice(0, -1).join("/") || ".";
+      const mediaUrls = extractMediaUrls(markdown, basePath);
+      mediaUrls.forEach(url => {
+        if (url.match(/\.(mp4|webm|mov)$/i)) {
+          ensurePreload(url, "video");
+        } else {
+          ensurePreload(url, "image");
+        }
+      });
+
+      const footnoteResult = applyFootnotes(markdown);
+      const html = marked.parse(footnoteResult.markdown + "\n\n" + footnoteResult.footnotesHtml);
+      postViewEl.innerHTML = "";
+      if (post.cover) {
+        const img = document.createElement("img");
+        img.src = post.cover;
+        img.className = "post-cover";
+        img.loading = "eager";
+        postViewEl.appendChild(img);
+      }
+      const meta = document.createElement("div");
+      meta.className = "post-meta";
+      meta.innerHTML = `<span>${post.name}</span><span>${post.path}</span>`;
+      postViewEl.appendChild(meta);
+
+      const content = document.createElement("div");
+      content.className = "content";
+      content.innerHTML = html;
+      rewriteRelativeUrls(content, basePath);
+      enhanceEmbeds(content);
+      enhancePlainBilibili(content);
+      enhancePlainYouTube(content);
+      enhanceCodeBlocks(content);
+      enhanceCaptions(content);
+      postViewEl.appendChild(content);
+
+      renderMathInElement(content, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\(", right: "\\)", display: false },
+          { left: "$", right: "$", display: false }
+        ],
+        throwOnError: false
+      });
+      setStatus("已加载");
+    }
+
+    async function fetchMarkdown(path) {
+      if (state.cache.has(path)) return state.cache.get(path);
+      try {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) return null;
+        const text = await res.text();
+        state.cache.set(path, text);
+        return text;
+      } catch (err) {
+        return null;
+      }
+    }
+
+    async function buildIndex() {
+      setStatus("扫描中");
+      let entries = [];
+      try {
+        entries = await loadPackTree(".");
+      } catch (err) {
+        entries = [];
+      }
+
+      if (!entries.length) {
+        setStatus("无内容");
+        postViewEl.innerHTML = `
+          <div class="empty-state">未找到 Markdown。</div>
+          <div class="footer-note">请在每一级目录提供 <code>pack.json</code> 指明 <code>dic</code> 与 <code>blog</code>。</div>
+        `;
+        return;
+      }
+
+      const grouped = groupPosts(entries);
+      const enriched = await enrichCovers(grouped);
+      state.folders = enriched.folders;
+      state.posts = enriched.posts;
+      state.selectedFolder = state.folders[0] ? state.folders[0].path : null;
+      renderFolders();
+      renderPosts();
+      if (state.posts[0]) {
+        loadPost(state.posts[0]);
+      } else {
+        setStatus("无文章");
+      }
+    }
+
+    searchInput.addEventListener("input", () => renderPosts());
+
+    buildIndex();
+  </script>
 </body>
 </html>
