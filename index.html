@@ -1,365 +1,357 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>quarrey-z 的博客</title>
-  <meta name="description" content="quarrey-z 的博客" />
+  <title>Quarrey-Z Blog</title>
+  <meta name="description" content="Quarrey-Z Blog" />
   <style>
     :root {
-      --bg: #f5f5f7;
-      --bg-2: #ffffff;
-      --ink: #111114;
-      --muted: #6b707c;
-      --accent: #0a84ff;
-      --accent-soft: rgba(10, 132, 255, 0.12);
-      --glass: rgba(255, 255, 255, 0.8);
-      --glass-border: rgba(255, 255, 255, 0.6);
-      --hairline: rgba(15, 20, 45, 0.08);
-      --shadow: 0 18px 40px rgba(15, 20, 45, 0.12);
-      --radius: 22px;
-      --radius-sm: 14px;
-      --font-sans: "SF Pro Rounded", "SF Pro Display", "SF Pro Text", -apple-system, "Helvetica Neue", sans-serif;
-      --font-mono: "SF Mono", "JetBrains Mono", "Menlo", monospace;
+      /* --- Apple System Colors (Light) --- */
+      --bg-app: #f2f2f7;
+      --bg-sidebar: rgba(255, 255, 255, 0.6);
+      --bg-card: #ffffff;
+      
+      --text-primary: #000000;
+      --text-body: #1d1d1f;
+      --text-secondary: #86868b;
+      --text-tertiary: #d2d2d7;
+      
+      --accent: #007aff;
+      --accent-hover: #0071eb;
+      
+      --separator: rgba(60, 60, 67, 0.12);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-card: 0 8px 24px -6px rgba(0,0,0,0.08); /* 减弱阴影 */
+      --shadow-cover: 0 12px 32px -8px rgba(0,0,0,0.12);
+      
+      --radius-l: 22px;
+      --radius-m: 14px;
+      --radius-s: 8px;
+      
+      --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+      --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+      --font-mono: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #0b0b0f;
-        --bg-2: #121218;
-        --ink: #f4f5f9;
-        --muted: #9aa0ad;
-        --accent: #5aa9ff;
-        --accent-soft: rgba(90, 169, 255, 0.16);
-        --glass: rgba(18, 18, 24, 0.78);
-        --glass-border: rgba(255, 255, 255, 0.08);
-        --hairline: rgba(255, 255, 255, 0.08);
-        --shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+        --bg-app: #000000;
+        --bg-sidebar: rgba(28, 28, 30, 0.7);
+        --bg-card: #1c1c1e;
+        
+        --text-primary: #ffffff;
+        --text-body: #f5f5f7;
+        --text-secondary: #98989d;
+        --text-tertiary: #48484a;
+        
+        --accent: #0a84ff;
+        --accent-hover: #409cff;
+        
+        --separator: rgba(84, 84, 88, 0.35);
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-card: 0 12px 40px -10px rgba(0,0,0,0.5);
+        --shadow-cover: 0 20px 50px -10px rgba(0,0,0,0.6);
       }
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    /* 代码块专用变量 */
+    :root {
+      --bg-code: #1b1b1f; /* 更深、更平的背景 */
+      --border-code: rgba(0,0,0,0.05); /* 浅色模式微边框 */
     }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-code: #252529; /* 深色模式略亮的背景 */
+        --border-code: rgba(255,255,255,0.08);
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
       min-height: 100vh;
-      font-family: var(--font-sans);
-      color: var(--ink);
-      background: var(--bg);
-      padding: env(safe-area-inset-top) env(safe-area-inset-right)
-        env(safe-area-inset-bottom) env(safe-area-inset-left);
-      overflow-x: hidden;
+      font-family: var(--font-main);
+      color: var(--text-body);
+      background-color: var(--bg-app);
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
       -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
+    /* --- 布局 --- */
     .page {
-      max-width: 1200px;
-      margin: 32px auto 80px;
-      padding: 0 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      height: 100vh;
       display: grid;
-      grid-template-columns: 320px minmax(0, 1fr);
-      gap: 28px;
+      grid-template-rows: auto 1fr;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      padding: 24px;
     }
 
+    /* --- Header --- */
     header {
       grid-column: 1 / -1;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 26px 28px;
-      border-radius: var(--radius);
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(28px);
-      box-shadow: var(--shadow);
-      animation: floatIn 0.9s ease-out;
+      padding: 16px 28px;
+      background: var(--bg-card);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-radius: var(--radius-l);
+      box-shadow: var(--shadow-sm);
+      z-index: 100;
     }
 
     header h1 {
-      font-size: clamp(1.8rem, 2.6vw, 2.6rem);
-      letter-spacing: -0.02em;
-      font-weight: 600;
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
     }
 
-    header .subtitle {
-      color: var(--muted);
-      font-size: 0.98rem;
-      margin-top: 6px;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .pill {
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    .panel {
-      border-radius: var(--radius);
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(24px);
-      background-clip: padding-box;
-      box-shadow: var(--shadow);
-      min-width: 0;
-      width: 100%;
-    }
-
+    /* --- Sidebar --- */
     .sidebar {
+      grid-row: 2;
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      animation: floatIn 1.2s ease-out;
+      gap: 20px;
+      overflow-y: auto;
+      scrollbar-width: none; 
+      -ms-overflow-style: none;
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .panel {
+      background: var(--bg-card);
+      border-radius: var(--radius-l);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: transform 0.2s ease;
     }
 
+    /* 搜索框 */
+    .search-wrapper { padding: 6px; }
     .search-box {
-      padding: 16px 18px;
-      border-radius: var(--radius-sm);
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid var(--hairline);
-      color: var(--ink);
+      width: 100%;
+      padding: 10px 16px;
+      background: var(--bg-app);
+      border-radius: var(--radius-m);
+      border: 2px solid transparent; 
+      color: var(--text-primary);
       font-size: 0.95rem;
       outline: none;
+      transition: all 0.2s ease;
+    }
+    .search-box::placeholder { color: var(--text-secondary); }
+    .search-box:focus {
+      background: var(--bg-card);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--separator);
+    }
+    .search-box.drag-over {
+      background: var(--bg-card);
+      border-color: var(--accent);
+      transform: scale(1.02);
     }
 
-    .folder-list,
-    .post-list {
-      padding: 18px;
-    }
+    .list-container { padding: 12px; }
 
     .section-title {
+      font-size: 0.7rem;
       font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
+      color: var(--text-secondary);
       text-transform: uppercase;
-      margin-bottom: 12px;
+      letter-spacing: 0.08em;
+      margin: 8px 12px 10px;
+      opacity: 0.9;
     }
 
-    .folder-item,
-    .post-item {
+    .folder-item, .post-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid transparent;
-      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      padding: 10px 12px;
+      margin-bottom: 4px;
+      border-radius: var(--radius-m);
       cursor: pointer;
+      transition: background 0.15s ease-out;
     }
-
-    .folder-item:hover,
-    .post-item:hover {
-      background: var(--accent-soft);
-      transform: translateY(-2px);
+    .folder-item:hover, .post-item:hover { background-color: var(--bg-app); }
+    .folder-item.active, .post-item.active {
+      background-color: var(--accent);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
     }
-
-    .folder-item.active,
-    .post-item.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: var(--accent);
-    }
+    .folder-item.active *, .post-item.active * { color: white !important; }
 
     .cover-thumb {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
       object-fit: cover;
-      background: rgba(10, 132, 255, 0.12);
+      background: var(--bg-app);
+      border: 1px solid var(--separator);
+      flex-shrink: 0;
     }
 
-    main {
-      padding: 30px 34px;
-      animation: floatIn 1.4s ease-out;
+    /* --- Main Content --- */
+    main.panel {
+      grid-row: 2;
+      padding: 0;
+      background: var(--bg-card);
+      box-shadow: var(--shadow-card);
+      position: relative;
+    }
+
+    .scroll-container {
+      height: 100%;
+      overflow-y: auto;
+      padding: 48px 64px 80px;
     }
 
     .post-cover {
       width: 100%;
-      border-radius: var(--radius);
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 2.4/1;
       object-fit: cover;
-      height: auto;
+      border-radius: var(--radius-l);
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-cover);
       display: block;
-      margin-bottom: 24px;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--separator);
     }
 
     .post-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 18px;
-      color: var(--muted);
-      font-size: 0.95rem;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--separator);
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
     }
+    .meta-path { color: var(--text-secondary); }
+    .meta-name { color: var(--text-primary); }
+    .meta-sep { color: var(--text-tertiary); font-size: 0.6em; }
 
+    /* --- Typography --- */
     .content {
-      line-height: 1.7;
-      font-size: 1.02rem;
+      max-width: 720px;
+      margin: 0 auto;
+      font-size: 1.06rem;
+      line-height: 1.75;
+      color: var(--text-body);
     }
 
-    .content h1,
-    .content h2,
-    .content h3,
-    .content h4 {
-      margin: 26px 0 12px;
-    }
+    .content h1 { font-family: var(--font-display); font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 0.8em; color: var(--text-primary); line-height: 1.2; }
+    .content h2 { font-family: var(--font-display); font-size: 1.65rem; font-weight: 600; margin: 2.2em 0 0.8em; letter-spacing: -0.015em; color: var(--text-primary); }
+    .content h3 { font-size: 1.35rem; font-weight: 600; margin: 1.8em 0 0.6em; color: var(--text-primary); }
+    .content p { margin-bottom: 1.6em; }
+    .content a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+    .content a:hover { border-bottom-color: var(--accent); }
+    .content ul, .content ol { margin-bottom: 1.6em; padding-left: 1.5em; }
+    .content blockquote { border-left: 4px solid var(--accent); background: var(--bg-app); padding: 16px 20px; margin: 2em 0; border-radius: 0 var(--radius-m) var(--radius-m) 0; font-style: italic; }
 
-    .content p {
-      margin: 12px 0;
-    }
-
-    .content ul,
-    .content ol {
-      padding-left: 1.4em;
-      margin: 12px 0 12px 6px;
-    }
-
-    .content li {
-      margin: 6px 0;
-    }
-
+    /* --- Code Block (踏实感设计 + 复制功能) --- */
     .content pre {
-      background: #0f111a;
-      color: #eef1f7;
-      padding: 18px;
-      border-radius: 16px;
-      overflow-x: auto;
-      font-family: var(--font-mono);
-      font-size: 0.92rem;
-      margin: 14px 0 18px;
-    }
-
-    .content code {
-      font-family: var(--font-mono);
-    }
-
-    .content img,
-    .content video {
-      max-width: 100%;
-      border-radius: 16px;
-      margin: 14px 0;
-      height: auto;
-      display: block;
-    }
-
-    .content figure {
-      margin: 16px 0 22px;
-    }
-
-    .content figcaption {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.92rem;
-      text-align: center;
-    }
-
-    .content .embed {
+      /* 关键调整：position relative 用于定位复制按钮 */
       position: relative;
-      width: 100%;
-      padding-top: 56.25%;
-      margin: 16px 0 22px;
-      border-radius: 18px;
-      overflow: hidden;
-      background: rgba(10, 132, 255, 0.08);
-      border: 1px solid var(--hairline);
+      background: var(--bg-code);
+      /* 移除阴影，改为平坦设计 */
+      box-shadow: none; 
+      /* 添加微边框 */
+      border: 1px solid var(--border-code);
+      padding: 20px;
+      border-radius: var(--radius-m); /* 圆角稍微改小一点点，更像文档块 */
+      overflow-x: auto;
+      margin: 2em 0;
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      line-height: 1.55;
     }
 
-    .content .embed iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      border-radius: 18px;
+    /* 修复高亮时的背景问题 */
+    .content pre code.hljs {
       display: block;
-      background: rgba(10, 132, 255, 0.08);
+      background: transparent;
+      padding: 0;
+      color: #abb2bf; /* 默认文字颜色 */
     }
 
-    .content blockquote {
-      border-left: 3px solid var(--accent);
-      padding-left: 16px;
-      color: var(--muted);
-      margin: 18px 0;
+    /* 复制按钮样式 */
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-main);
+      transition: all 0.2s;
+      opacity: 0; /* 默认隐藏 */
     }
 
-    .content a {
-      color: var(--accent);
-      text-decoration: underline;
-      text-decoration-thickness: 1.5px;
-      text-underline-offset: 3px;
+    .content pre:hover .copy-btn {
+      opacity: 1; /* 悬停显示 */
     }
 
-    .empty-state {
-      color: var(--muted);
-      font-size: 1rem;
-      text-align: center;
-      padding: 60px 0;
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
     }
 
-    .footer-note {
-      margin-top: 24px;
-      font-size: 0.88rem;
-      color: var(--muted);
+    .copy-btn.copied {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
     }
 
-    @keyframes floatIn {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* 滚动条 */
+    .content pre code::-webkit-scrollbar { height: 8px; }
+    .content pre code::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+    .content p code, .content li code {
+      background: var(--bg-app); padding: 3px 6px; border-radius: 6px;
+      font-family: var(--font-mono); font-size: 0.88em; color: var(--accent);
+      border: 1px solid var(--separator);
     }
 
-    @media (max-width: 980px) {
-      .page {
-        grid-template-columns: 1fr;
-      }
+    /* Media */
+    .content figure { margin: 3em 0; text-align: center; }
+    .content img, .content video { display: block; max-width: 100%; border-radius: var(--radius-l); box-shadow: var(--shadow-card); margin: 0 auto; }
+    .content figcaption { margin-top: 16px; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
+    .content .embed { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: var(--radius-l); overflow: hidden; box-shadow: var(--shadow-card); margin-bottom: 12px; }
+    .content .embed iframe { width: 100%; height: 100%; border: 0; }
 
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 14px;
-      }
-    }
+    /* Empty State */
+    .empty-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-tertiary); text-align: center; }
+    .footer-note { margin-top: 16px; font-size: 0.8rem; padding: 6px 14px; background: var(--bg-app); border-radius: 99px; color: var(--text-secondary); }
 
-    @media (max-width: 640px) {
-      .page {
-        margin-top: 18px;
-        padding: 0 16px;
-      }
-
-      main {
-        padding: 24px;
-      }
-
-      .search-box {
-        width: 100%;
-      }
+    @media (max-width: 900px) {
+      .page { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr; padding: 12px; gap: 16px; height: auto; }
+      .sidebar { max-height: 45vh; margin-bottom: 10px; }
+      header { position: sticky; top: 10px; margin-bottom: 10px; }
+      .scroll-container { padding: 32px 24px; }
+      .post-cover { aspect-ratio: 16/9; margin-bottom: 24px; }
+      .content h1 { font-size: 1.8rem; }
+      .copy-btn { opacity: 1; /* 手机端始终显示复制按钮 */ }
     }
   </style>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css" />
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
 </head>
 <body>
@@ -368,32 +360,33 @@
       <div>
         <h1>Quarrey-Z Blog</h1>
       </div>
-      <div class="header-actions">
-        <span class="pill">自动索引</span>
-        <span class="pill" id="status-pill">正在扫描</span>
-      </div>
     </header>
 
     <aside class="sidebar">
-      <div class="panel" style="padding: 16px;">
-        <input id="search" class="search-box" placeholder="搜索标题或路径" />
+      <div class="panel search-wrapper">
+        <input id="search" class="search-box" placeholder="搜索 (Search)..." />
       </div>
 
-      <div class="panel folder-list">
-        <div class="section-title">文件夹</div>
+      <div class="panel list-container">
+        <div class="section-title">Library</div>
         <div id="folder-items"></div>
       </div>
 
-      <div class="panel post-list">
-        <div class="section-title">文章</div>
+      <div class="panel list-container">
+        <div class="section-title">Articles</div>
         <div id="post-items"></div>
       </div>
     </aside>
 
     <main class="panel">
-      <div id="post-view" class="content">
-        <div class="empty-state">请选择一篇文章，或在本目录放入 Markdown。</div>
-        <div class="footer-note">资源文件夹请命名为 <code>__assets</code>，不会被继续扫描。</div>
+      <div class="scroll-container">
+        <div id="post-view">
+          <div class="empty-state">
+            <div style="font-weight:600; font-size:1.1rem; color:var(--text-secondary); margin-bottom:8px;">未选择文章</div>
+            <div style="color:var(--text-tertiary)">请在左侧选择文件夹或搜索</div>
+            <div class="footer-note">Ensure <code>pack.json</code> exists</div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -406,9 +399,7 @@
     const ASSET_DIR_NAME = "__assets";
     const PACK_FILE = "pack.json";
     const SUPPORTED_IMAGE_EXT = ["png", "jpg", "jpeg", "webp", "avif", "gif"];
-    const SUPPORTED_VIDEO_EXT = ["mp4", "webm", "mov"];
 
-    const statusPill = document.getElementById("status-pill");
     const folderListEl = document.getElementById("folder-items");
     const postListEl = document.getElementById("post-items");
     const postViewEl = document.getElementById("post-view");
@@ -423,35 +414,68 @@
       preloadLinks: new Set()
     };
 
-    marked.setOptions({
-      breaks: true,
-      langPrefix: "language-",
-      highlight: function(code, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-          return hljs.highlight(code, { language: lang }).value;
+    // --- Drag & Drop ---
+    searchInput.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        searchInput.classList.add("drag-over");
+    });
+    searchInput.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        searchInput.classList.remove("drag-over");
+    });
+    searchInput.addEventListener("drop", (e) => {
+        e.preventDefault();
+        searchInput.classList.remove("drag-over");
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0];
+            searchInput.value = file.name;
+            renderPosts();
         }
-        return hljs.highlightAuto(code).value;
-      }
     });
 
-    function enhanceCodeBlocks(container) {
-      const blocks = Array.from(container.querySelectorAll("pre code"));
-      blocks.forEach(block => {
-        if (!block.classList.contains("hljs")) {
-          block.classList.add("hljs");
+    // --- Marked ---
+    marked.setOptions({
+      breaks: true,
+      // 修复高亮：langPrefix 必须匹配 highlight.js 期待的类名格式
+      langPrefix: "language-"
+    });
+
+    // --- Code Processing (Highlight + Copy) ---
+    function processCodeBlocks(container) {
+      const pres = Array.from(container.querySelectorAll("pre"));
+      
+      pres.forEach(pre => {
+        // 1. 查找 pre 内的 code 标签
+        const codeBlock = pre.querySelector("code");
+        if (codeBlock) {
+          // 2. 强制添加 hljs 类（虽然 highlightElement 会加，但防万一）
+          if (!codeBlock.classList.contains("hljs")) {
+              codeBlock.classList.add("hljs");
+          }
+          // 3. 触发高亮
+          try { hljs.highlightElement(codeBlock); } catch (e) { console.warn(e); }
         }
-        try {
-          hljs.highlightElement(block);
-        } catch (err) {
-          // ignore highlight failures
-        }
+
+        // 4. 添加复制按钮
+        const btn = document.createElement("button");
+        btn.className = "copy-btn";
+        btn.textContent = "Copy";
+        btn.onclick = () => {
+            const text = codeBlock ? codeBlock.innerText : pre.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = "Copied";
+                btn.classList.add("copied");
+                setTimeout(() => {
+                    btn.textContent = "Copy";
+                    btn.classList.remove("copied");
+                }, 2000);
+            });
+        };
+        pre.appendChild(btn);
       });
     }
 
-    function setStatus(text) {
-      statusPill.textContent = text;
-    }
-
+    // --- Data Loading ---
     function normalizePath(path) {
       const cleaned = path.replace(/\\+/g, "/").replace(/\/+$/, "");
       const withoutDot = cleaned.replace(/^\.\/+/, "");
@@ -470,28 +494,25 @@
         const res = await fetch(packPath, { cache: "no-store" });
         if (!res.ok) return null;
         return await res.json();
-      } catch (err) {
-        return null;
-      }
+      } catch (err) { return null; }
     }
 
     async function loadPackTree(path) {
       const queue = [{ path: normalizePath(path), depth: 0 }];
       const seen = new Set();
       const results = [];
-
       while (queue.length) {
         const current = queue.shift();
         if (!current || seen.has(current.path)) continue;
         seen.add(current.path);
-
+        
         const pack = await fetchPack(current.path);
         if (!pack) continue;
-
+        
         const basePath = current.path === "." ? "." : current.path;
         const blogs = Array.isArray(pack.blog) ? pack.blog : [];
         const dics = Array.isArray(pack.dic) ? pack.dic : [];
-
+        
         blogs.forEach(item => {
           if (!item) return;
           const name = String(item).trim();
@@ -500,7 +521,7 @@
           const filePath = normalizePath(`${basePath}/${fileName}`);
           results.push({ type: "file", path: filePath, depth: current.depth });
         });
-
+        
         dics.forEach(item => {
           if (!item) return;
           const name = String(item).replace(/\/+$/, "").trim();
@@ -510,7 +531,6 @@
           queue.push({ path: dirPath, depth: current.depth + 1 });
         });
       }
-
       return results;
     }
 
@@ -518,9 +538,7 @@
       try {
         const res = await fetch(path, { method: "HEAD" });
         return res.ok;
-      } catch (err) {
-        return false;
-      }
+      } catch (err) { return false; }
     }
 
     async function findCover(basePath, baseName) {
@@ -544,21 +562,22 @@
       state.preloadLinks.add(url);
     }
 
+    // --- Content Processor ---
+    function resolvePath(basePath, url) {
+      if (!url) return url;
+      if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/")) return url;
+      return normalizePath(basePath + "/" + url);
+    }
+    
     function extractMediaUrls(markdown, basePath) {
       const urls = [];
       const imageRegex = /!\[[^\]]*\]\(([^)]+)\)/g;
       const videoRegex = /<video[^>]*src=["']([^"']+)["'][^>]*>/g;
       const sourceRegex = /<source[^>]*src=["']([^"']+)["'][^>]*>/g;
       let match;
-      while ((match = imageRegex.exec(markdown))) {
-        urls.push(resolvePath(basePath, match[1]));
-      }
-      while ((match = videoRegex.exec(markdown))) {
-        urls.push(resolvePath(basePath, match[1]));
-      }
-      while ((match = sourceRegex.exec(markdown))) {
-        urls.push(resolvePath(basePath, match[1]));
-      }
+      while ((match = imageRegex.exec(markdown))) { urls.push(resolvePath(basePath, match[1])); }
+      while ((match = videoRegex.exec(markdown))) { urls.push(resolvePath(basePath, match[1])); }
+      while ((match = sourceRegex.exec(markdown))) { urls.push(resolvePath(basePath, match[1])); }
       const directMedia = markdown.match(/\b[^\s)]+\.(mp4|webm|mov)\b/gi) || [];
       directMedia.forEach(url => urls.push(resolvePath(basePath, url)));
       return urls;
@@ -569,46 +588,109 @@
       const defs = new Map();
       const output = [];
       let inFence = false;
-
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         const fenceMatch = line.match(/^```|^~~~$/);
-        if (fenceMatch) {
-          inFence = !inFence;
-          output.push(line);
-          continue;
-        }
+        if (fenceMatch) { inFence = !inFence; output.push(line); continue; }
         if (!inFence) {
           const defMatch = line.match(/^\[\^([^\]]+)\]:\s*(.+)$/);
-          if (defMatch) {
-            defs.set(defMatch[1], defMatch[2]);
-            continue;
-          }
+          if (defMatch) { defs.set(defMatch[1], defMatch[2]); continue; }
         }
         output.push(line);
       }
-
       if (!defs.size) return { markdown, footnotesHtml: "" };
-
       const replaced = output.join("\n").replace(/\[\^([^\]]+)\]/g, (match, id) => {
         if (!defs.has(id)) return match;
         return `<sup class="footnote-ref"><a href="#fn-${id}" id="fnref-${id}">[${id}]</a></sup>`;
       });
-
       const items = Array.from(defs.entries())
         .map(([id, text]) => `<li id="fn-${id}">${text} <a href="#fnref-${id}">↩</a></li>`)
         .join("");
       const footnotesHtml = `<section class="footnotes"><hr><ol>${items}</ol></section>`;
-
       return { markdown: replaced, footnotesHtml };
     }
 
-    function resolvePath(basePath, url) {
-      if (!url) return url;
-      if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/")) return url;
-      return normalizePath(basePath + "/" + url);
+    function rewriteRelativeUrls(container, basePath) {
+      const elements = container.querySelectorAll("img, video, source, a");
+      elements.forEach(el => {
+        const attr = el.tagName.toLowerCase() === "a" ? "href" : "src";
+        const raw = el.getAttribute(attr);
+        if (!raw) return;
+        const rewritten = resolvePath(basePath, raw);
+        if (rewritten !== raw) { el.setAttribute(attr, rewritten); }
+      });
     }
-
+    
+    function extractYouTubeId(url) {
+        try {
+            const u = new URL(url);
+            if (u.hostname === "youtu.be") return u.pathname.replace("/", "");
+            if (u.hostname.includes("youtube.com")) {
+                if (u.pathname === "/watch") return u.searchParams.get("v");
+                if (u.pathname.startsWith("/embed/")) return u.pathname.split("/embed/")[1];
+                if (u.pathname.startsWith("/shorts/")) return u.pathname.split("/shorts/")[1];
+            }
+        } catch (err) { return null; }
+        return null;
+    }
+    function extractBilibiliId(url) {
+        try {
+            const u = new URL(url);
+            if (!u.hostname.includes("bilibili.com")) return null;
+            const bvidMatch = u.pathname.match(/\/video\/(BV[0-9A-Za-z]+)/);
+            if (bvidMatch) return { type: "bvid", value: bvidMatch[1] };
+            const aidMatch = u.pathname.match(/\/video\/(av\\d+)/);
+            if (aidMatch) return { type: "aid", value: aidMatch[1].replace("av", "") };
+        } catch (err) { return null; }
+        return null;
+    }
+    function enhanceEmbeds(container) {
+        const links = Array.from(container.querySelectorAll("a"));
+        links.forEach(link => {
+            const href = link.getAttribute("href");
+            if (!href) return;
+            const ytId = extractYouTubeId(href);
+            const bili = extractBilibiliId(href);
+            if (!ytId && !bili) return;
+            const wrapper = document.createElement("div");
+            wrapper.className = "embed";
+            const caption = link.textContent.trim();
+            if (caption && caption !== href) { wrapper.dataset.caption = caption; }
+            const iframe = document.createElement("iframe");
+            iframe.setAttribute("loading", "lazy");
+            iframe.setAttribute("allowfullscreen", "true");
+            if (ytId) iframe.src = `https://www.youtube.com/embed/${ytId}`;
+            else if (bili) iframe.src = `https://player.bilibili.com/player.html?${bili.type}=${bili.value}&page=1&high_quality=1&danmaku=0`;
+            wrapper.appendChild(iframe);
+            link.replaceWith(wrapper);
+        });
+    }
+    function enhancePlainEmbeds(container) {
+       const blocks = Array.from(container.querySelectorAll("p, li"));
+       blocks.forEach(block => {
+           if (block.querySelector("a, img, video, iframe")) return;
+           const text = block.textContent.trim();
+           const ytMatch = text.match(/\b([0-9A-Za-z_-]{11})\b/) || (text.length===11? [null, text]: null);
+           const biliMatch = text.match(/\b(BV[0-9A-Za-z]{10})\b/) || text.match(/\bav(\d+)\b/i);
+           if (!ytMatch && !biliMatch) return;
+           const wrapper = document.createElement("div");
+           wrapper.className = "embed";
+           wrapper.dataset.caption = text;
+           const iframe = document.createElement("iframe");
+           iframe.setAttribute("loading", "lazy");
+           iframe.setAttribute("allowfullscreen", "true");
+           if (biliMatch) {
+               const val = biliMatch[1];
+               const type = val.startsWith("BV") ? "bvid" : "aid";
+               iframe.src = `https://player.bilibili.com/player.html?${type}=${val}&page=1&high_quality=1&danmaku=0`;
+           } else if (ytMatch) {
+               iframe.src = `https://www.youtube.com/embed/${ytMatch[1]}`;
+           }
+           wrapper.appendChild(iframe);
+           block.replaceWith(wrapper);
+       });
+    }
+    
     function wrapWithCaption(node, caption) {
       if (!caption) return;
       const parent = node.parentNode;
@@ -627,16 +709,11 @@
         const caption = img.getAttribute("title") || img.getAttribute("alt");
         if (caption) wrapWithCaption(img, caption);
       });
-
       const videos = Array.from(container.querySelectorAll("video"));
       videos.forEach(video => {
-        const caption =
-          video.getAttribute("title") ||
-          video.getAttribute("data-caption") ||
-          video.getAttribute("aria-label");
+        const caption = video.getAttribute("title") || video.getAttribute("data-caption") || video.getAttribute("aria-label");
         if (caption) wrapWithCaption(video, caption);
       });
-
       const embeds = Array.from(container.querySelectorAll(".embed"));
       embeds.forEach(embed => {
         const caption = embed.dataset.caption;
@@ -644,168 +721,18 @@
       });
     }
 
-    function rewriteRelativeUrls(container, basePath) {
-      const elements = container.querySelectorAll("img, video, source, a");
-      elements.forEach(el => {
-        const attr = el.tagName.toLowerCase() === "a" ? "href" : "src";
-        const raw = el.getAttribute(attr);
-        if (!raw) return;
-        const rewritten = resolvePath(basePath, raw);
-        if (rewritten !== raw) {
-          el.setAttribute(attr, rewritten);
-        }
-      });
-    }
-
-    function extractYouTubeId(url) {
-      try {
-        const u = new URL(url);
-        if (u.hostname === "youtu.be") {
-          return u.pathname.replace("/", "");
-        }
-        if (u.hostname.includes("youtube.com")) {
-          if (u.pathname === "/watch") return u.searchParams.get("v");
-          if (u.pathname.startsWith("/embed/")) return u.pathname.split("/embed/")[1];
-          if (u.pathname.startsWith("/shorts/")) return u.pathname.split("/shorts/")[1];
-        }
-      } catch (err) {
-        return null;
-      }
-      return null;
-    }
-
-    function extractBilibiliId(url) {
-      try {
-        const u = new URL(url);
-        if (!u.hostname.includes("bilibili.com")) return null;
-        const bvidMatch = u.pathname.match(/\/video\/(BV[0-9A-Za-z]+)/);
-        if (bvidMatch) return { type: "bvid", value: bvidMatch[1] };
-        const aidMatch = u.pathname.match(/\/video\/(av\\d+)/);
-        if (aidMatch) return { type: "aid", value: aidMatch[1].replace("av", "") };
-        const bvidParam = u.searchParams.get("bvid");
-        if (bvidParam) return { type: "bvid", value: bvidParam };
-        const aidParam = u.searchParams.get("aid");
-        if (aidParam) return { type: "aid", value: aidParam };
-      } catch (err) {
-        return null;
-      }
-      return null;
-    }
-
-    function enhanceEmbeds(container) {
-      const links = Array.from(container.querySelectorAll("a"));
-      links.forEach(link => {
-        const href = link.getAttribute("href");
-        if (!href) return;
-        const ytId = extractYouTubeId(href);
-        const bili = extractBilibiliId(href);
-        if (!ytId && !bili) return;
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "embed";
-        const caption = link.textContent.trim();
-        if (caption && caption !== href) {
-          wrapper.dataset.caption = caption;
-        }
-        const iframe = document.createElement("iframe");
-        iframe.setAttribute("loading", "lazy");
-        iframe.setAttribute("allowfullscreen", "true");
-        iframe.setAttribute(
-          "allow",
-          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        );
-        if (ytId) {
-          iframe.src = `https://www.youtube.com/embed/${ytId}`;
-        } else if (bili && bili.type === "bvid") {
-          iframe.src = `https://player.bilibili.com/player.html?bvid=${bili.value}&page=1&high_quality=1&danmaku=0`;
-        } else if (bili && bili.type === "aid") {
-          iframe.src = `https://player.bilibili.com/player.html?aid=${bili.value}&page=1&high_quality=1&danmaku=0`;
-        }
-        wrapper.appendChild(iframe);
-        link.replaceWith(wrapper);
-      });
-    }
-
-    function extractBilibiliFromText(text) {
-      if (!text) return null;
-      const bvidMatch = text.match(/\b(BV[0-9A-Za-z]{10})\b/);
-      if (bvidMatch) return { type: "bvid", value: bvidMatch[1] };
-      const aidMatch = text.match(/\bav(\d+)\b/i);
-      if (aidMatch) return { type: "aid", value: aidMatch[1] };
-      return null;
-    }
-
-    function enhancePlainBilibili(container) {
-      const blocks = Array.from(container.querySelectorAll("p, li"));
-      blocks.forEach(block => {
-        if (block.querySelector("a, img, video, iframe")) return;
-        const text = block.textContent.trim();
-        const bili = extractBilibiliFromText(text);
-        if (!bili) return;
-        const wrapper = document.createElement("div");
-        wrapper.className = "embed";
-        wrapper.dataset.caption = text;
-        const iframe = document.createElement("iframe");
-        iframe.setAttribute("loading", "lazy");
-        iframe.setAttribute("allowfullscreen", "true");
-        iframe.setAttribute(
-          "allow",
-          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        );
-        if (bili.type === "bvid") {
-          iframe.src = `https://player.bilibili.com/player.html?bvid=${bili.value}&page=1&high_quality=1&danmaku=0`;
-        } else {
-          iframe.src = `https://player.bilibili.com/player.html?aid=${bili.value}&page=1&high_quality=1&danmaku=0`;
-        }
-        wrapper.appendChild(iframe);
-        block.replaceWith(wrapper);
-      });
-    }
-
-    function extractYouTubeFromText(text) {
-      if (!text) return null;
-      const trimmed = text.trim();
-      if (/^[0-9A-Za-z_-]{11}$/.test(trimmed)) return trimmed;
-      const match = trimmed.match(/\b([0-9A-Za-z_-]{11})\b/);
-      return match ? match[1] : null;
-    }
-
-    function enhancePlainYouTube(container) {
-      const blocks = Array.from(container.querySelectorAll("p, li"));
-      blocks.forEach(block => {
-        if (block.querySelector("a, img, video, iframe")) return;
-        const ytId = extractYouTubeFromText(block.textContent);
-        if (!ytId) return;
-        const wrapper = document.createElement("div");
-        wrapper.className = "embed";
-        wrapper.dataset.caption = ytId;
-        const iframe = document.createElement("iframe");
-        iframe.setAttribute("loading", "lazy");
-        iframe.setAttribute("allowfullscreen", "true");
-        iframe.setAttribute(
-          "allow",
-          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        );
-        iframe.src = `https://www.youtube.com/embed/${ytId}`;
-        wrapper.appendChild(iframe);
-        block.replaceWith(wrapper);
-      });
-    }
+    // --- State & Rendering ---
 
     function groupPosts(entries) {
       const folders = new Map();
       const posts = [];
+      
       entries.forEach(entry => {
         if (entry.type === "dir") {
           const folderPath = normalizePath(entry.path);
           const folderName = folderPath.split("/").filter(Boolean).pop() || "Quarrey";
           if (!folders.has(folderPath)) {
-            folders.set(folderPath, {
-              path: folderPath,
-              name: folderName,
-              cover: null,
-              depth: entry.depth || 0
-            });
+            folders.set(folderPath, { path: folderPath, name: folderName, cover: null, depth: entry.depth || 0 });
           }
         }
       });
@@ -816,26 +743,18 @@
         const fileName = parts.pop();
         const folderPath = parts.join("/") || ".";
         const folderName = folderPath.split("/").filter(Boolean).pop() || "Quarrey";
+        
         if (!folders.has(folderPath)) {
-          folders.set(folderPath, {
-            path: folderPath,
-            name: folderName,
-            cover: null,
-            depth: entry.depth || 0
-          });
+          folders.set(folderPath, { path: folderPath, name: folderName, cover: null, depth: entry.depth || 0 });
         }
-        posts.push({
-          path: normalizePath(entry.path),
-          name: fileName.replace(/\.md$/, ""),
-          folderPath
-        });
+        
+        posts.push({ path: normalizePath(entry.path), name: fileName.replace(/\.md$/, ""), folderPath });
       });
 
       const folderList = Array.from(folders.values()).sort((a, b) => {
         if (a.depth !== b.depth) return a.depth - b.depth;
         return a.name.localeCompare(b.name, "zh-Hans-CN");
       });
-
       return { folders: folderList, posts };
     }
 
@@ -853,22 +772,22 @@
       }
       return data;
     }
-
     function renderFolders() {
       folderListEl.innerHTML = "";
       state.folders.forEach(folder => {
         const item = document.createElement("div");
-        item.className = "folder-item" + (state.selectedFolder === folder.path ? " active" : "");
-        item.style.setProperty("--depth", folder.depth || 0);
-        item.style.paddingLeft = `calc(14px + ${(folder.depth || 0) * 14}px)`;
+        const isActive = state.selectedFolder === folder.path;
+        item.className = "folder-item" + (isActive ? " active" : "");
+        item.style.paddingLeft = `calc(12px + ${(folder.depth || 0) * 16}px)`;
+        
         item.innerHTML = `
           <img class="cover-thumb" src="${folder.cover || ""}" alt="" />
           <div>
-            <div>${folder.name}</div>
-            <div style="font-size:0.8rem;color:var(--muted);">${folder.path === "." ? "Quarrey" : folder.path}</div>
+            <div style="font-weight:500; font-size:0.95rem;">${folder.name}</div>
           </div>
         `;
         item.addEventListener("click", () => {
+          searchInput.value = ""; 
           state.selectedFolder = folder.path;
           renderFolders();
           renderPosts();
@@ -880,84 +799,99 @@
     function renderPosts() {
       postListEl.innerHTML = "";
       const query = normalizeQuery(searchInput.value);
+      
       const posts = state.posts.filter(post => {
-        const matchFolder = state.selectedFolder
-          ? post.folderPath === state.selectedFolder ||
-            post.folderPath.startsWith(`${state.selectedFolder}/`)
-          : true;
-        const searchablePath = normalizeQuery(post.path);
-        const searchableFolder = normalizeQuery(post.folderPath === "." ? "Quarrey" : post.folderPath);
-        const matchQuery =
-          !query ||
-          post.name.toLowerCase().includes(query) ||
-          searchablePath.includes(query) ||
-          searchableFolder.includes(query);
-        return matchFolder && matchQuery;
+        const matchQuery = !query || 
+                           post.name.toLowerCase().includes(query) || 
+                           post.path.toLowerCase().includes(query);
+
+        if (query) {
+           return matchQuery;
+        } else {
+           const matchFolder = state.selectedFolder 
+             ? post.folderPath === state.selectedFolder || post.folderPath.startsWith(`${state.selectedFolder}/`)
+             : true;
+           return matchFolder;
+        }
       });
+
       posts.forEach(post => {
         const item = document.createElement("div");
-        item.className = "post-item" + (state.selectedPost && state.selectedPost.path === post.path ? " active" : "");
+        const isActive = state.selectedPost && state.selectedPost.path === post.path;
+        item.className = "post-item" + (isActive ? " active" : "");
+        
         item.innerHTML = `
           <img class="cover-thumb" src="${post.cover || ""}" alt="" />
           <div>
-            <div>${post.name}</div>
-            <div style="font-size:0.8rem;color:var(--muted);">${post.folderPath === "." ? "Quarrey" : post.folderPath}</div>
+            <div style="font-weight:500; font-size:0.95rem;">${post.name}</div>
+            <div style="font-size:0.75rem; color:${isActive ? 'rgba(255,255,255,0.8)' : 'var(--text-secondary)'};">
+              ${post.folderPath === "." ? "Library" : post.folderPath.split("/").pop()}
+            </div>
           </div>
         `;
         item.addEventListener("click", () => loadPost(post));
         postListEl.appendChild(item);
       });
-      if (!posts.length) {
-        postListEl.innerHTML = `<div class="empty-state">没有匹配的文章</div>`;
+
+      if (!posts.length) { 
+        postListEl.innerHTML = `<div class="empty-state" style="padding:20px;">无匹配项</div>`; 
       }
     }
 
     async function loadPost(post) {
       state.selectedPost = post;
       renderPosts();
-      setStatus("加载中");
+      
       const markdown = await fetchMarkdown(post.path);
       if (!markdown) {
-        postViewEl.innerHTML = `<div class="empty-state">无法读取 ${post.path}</div>`;
-        setStatus("读取失败");
+        postViewEl.innerHTML = `<div class="empty-state">Unable to load ${post.path}</div>`;
         return;
       }
+
       const basePath = post.path.split("/").slice(0, -1).join("/") || ".";
       const mediaUrls = extractMediaUrls(markdown, basePath);
       mediaUrls.forEach(url => {
-        if (url.match(/\.(mp4|webm|mov)$/i)) {
-          ensurePreload(url, "video");
-        } else {
-          ensurePreload(url, "image");
-        }
+        if (url.match(/\.(mp4|webm|mov)$/i)) ensurePreload(url, "video");
+        else ensurePreload(url, "image");
       });
 
       const footnoteResult = applyFootnotes(markdown);
       const html = marked.parse(footnoteResult.markdown + "\n\n" + footnoteResult.footnotesHtml);
+      
       postViewEl.innerHTML = "";
+      
       if (post.cover) {
         const img = document.createElement("img");
         img.src = post.cover;
         img.className = "post-cover";
-        img.loading = "eager";
         postViewEl.appendChild(img);
       }
+      
       const meta = document.createElement("div");
       meta.className = "post-meta";
-      meta.innerHTML = `<span>${post.name}</span><span>${post.path}</span>`;
+      const folderDisplay = post.folderPath === "." ? "Library" : post.folderPath;
+      meta.innerHTML = `
+        <span class="meta-path">${folderDisplay}</span>
+        <span class="meta-sep">●</span>
+        <span class="meta-name">${post.name}</span>
+      `;
       postViewEl.appendChild(meta);
-
+      
       const content = document.createElement("div");
       content.className = "content";
       content.innerHTML = html;
+      
       rewriteRelativeUrls(content, basePath);
       enhanceEmbeds(content);
-      enhancePlainBilibili(content);
-      enhancePlainYouTube(content);
-      enhanceCodeBlocks(content);
+      enhancePlainEmbeds(content);
+      
+      // === 关键修复点 ===
+      // 在 DOM 插入完成后，统一处理代码块（添加高亮 + 复制按钮）
+      processCodeBlocks(content);
+      
       enhanceCaptions(content);
       postViewEl.appendChild(content);
-
+      
       renderMathInElement(content, {
         delimiters: [
           { left: "$$", right: "$$", display: true },
@@ -966,7 +900,6 @@
         ],
         throwOnError: false
       });
-      setStatus("已加载");
     }
 
     async function fetchMarkdown(path) {
@@ -977,45 +910,32 @@
         const text = await res.text();
         state.cache.set(path, text);
         return text;
-      } catch (err) {
-        return null;
-      }
+      } catch (err) { return null; }
     }
 
     async function buildIndex() {
-      setStatus("扫描中");
       let entries = [];
-      try {
-        entries = await loadPackTree(".");
-      } catch (err) {
-        entries = [];
-      }
-
+      try { entries = await loadPackTree("."); } catch (err) { entries = []; }
+      
       if (!entries.length) {
-        setStatus("无内容");
-        postViewEl.innerHTML = `
-          <div class="empty-state">未找到 Markdown。</div>
-          <div class="footer-note">请在每一级目录提供 <code>pack.json</code> 指明 <code>dic</code> 与 <code>blog</code>。</div>
-        `;
+        postViewEl.innerHTML = `<div class="empty-state">No content found</div>`;
         return;
       }
-
+      
       const grouped = groupPosts(entries);
       const enriched = await enrichCovers(grouped);
       state.folders = enriched.folders;
       state.posts = enriched.posts;
+      
       state.selectedFolder = state.folders[0] ? state.folders[0].path : null;
+      
       renderFolders();
       renderPosts();
-      if (state.posts[0]) {
-        loadPost(state.posts[0]);
-      } else {
-        setStatus("无文章");
-      }
+      
+      if (state.posts[0]) { loadPost(state.posts[0]); }
     }
 
     searchInput.addEventListener("input", () => renderPosts());
-
     buildIndex();
   </script>
 </body>
