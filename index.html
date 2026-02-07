@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -23,7 +22,7 @@
       
       --separator: rgba(60, 60, 67, 0.12);
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-card: 0 8px 24px -6px rgba(0,0,0,0.08); /* 减弱阴影 */
+      --shadow-card: 0 8px 24px -6px rgba(0,0,0,0.08);
       --shadow-cover: 0 12px 32px -8px rgba(0,0,0,0.12);
       
       --radius-l: 22px;
@@ -56,14 +55,13 @@
       }
     }
 
-    /* 代码块专用变量 */
     :root {
-      --bg-code: #1b1b1f; /* 更深、更平的背景 */
-      --border-code: rgba(0,0,0,0.05); /* 浅色模式微边框 */
+      --bg-code: #1b1b1f;
+      --border-code: rgba(0,0,0,0.05);
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg-code: #252529; /* 深色模式略亮的背景 */
+        --bg-code: #252529;
         --border-code: rgba(255,255,255,0.08);
       }
     }
@@ -79,6 +77,62 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* --- Loading Splash Screen (macOS Style) --- */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-app); /* 与背景同色，无缝衔接 */
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .loading-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+
+    .progress-track {
+      width: 200px;
+      height: 6px;
+      background: rgba(128, 128, 128, 0.2);
+      border-radius: 100px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 30%;
+      background: var(--accent);
+      border-radius: 100px;
+      /* Indeterminate Animation */
+      position: absolute;
+      left: 0;
+      animation: macos-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    .loading-status {
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      opacity: 0.8;
+      height: 1.2em; /* 占位防止跳动 */
+    }
+
+    @keyframes macos-progress {
+      0% { left: -30%; width: 30%; }
+      50% { width: 60%; }
+      100% { left: 100%; width: 30%; }
+    }
+
     /* --- 布局 --- */
     .page {
       max-width: 1400px;
@@ -89,6 +143,13 @@
       grid-template-columns: 280px 1fr;
       gap: 24px;
       padding: 24px;
+      /* 初始隐藏，等加载完淡入 */
+      opacity: 0; 
+      transition: opacity 0.6s ease-out;
+    }
+    
+    .page.loaded {
+      opacity: 1;
     }
 
     /* --- Header --- */
@@ -261,65 +322,40 @@
     .content ul, .content ol { margin-bottom: 1.6em; padding-left: 1.5em; }
     .content blockquote { border-left: 4px solid var(--accent); background: var(--bg-app); padding: 16px 20px; margin: 2em 0; border-radius: 0 var(--radius-m) var(--radius-m) 0; font-style: italic; }
 
-    /* --- Code Block (踏实感设计 + 复制功能) --- */
+    /* Code Block */
     .content pre {
-      /* 关键调整：position relative 用于定位复制按钮 */
       position: relative;
       background: var(--bg-code);
-      /* 移除阴影，改为平坦设计 */
       box-shadow: none; 
-      /* 添加微边框 */
       border: 1px solid var(--border-code);
       padding: 20px;
-      border-radius: var(--radius-m); /* 圆角稍微改小一点点，更像文档块 */
+      border-radius: var(--radius-m);
       overflow-x: auto;
       margin: 2em 0;
       font-family: var(--font-mono);
       font-size: 0.92em;
       line-height: 1.55;
+      color: #abb2bf;
     }
 
-    /* 修复高亮时的背景问题 */
     .content pre code.hljs {
       display: block;
       background: transparent;
       padding: 0;
-      color: #abb2bf; /* 默认文字颜色 */
     }
 
-    /* 复制按钮样式 */
+    /* Copy Button */
     .copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: var(--font-main);
-      transition: all 0.2s;
-      opacity: 0; /* 默认隐藏 */
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6); font-size: 0.75rem; padding: 4px 10px;
+      border-radius: 6px; cursor: pointer; font-family: var(--font-main);
+      transition: all 0.2s; opacity: 0;
     }
+    .content pre:hover .copy-btn { opacity: 1; }
+    .copy-btn:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
+    .copy-btn.copied { background: var(--accent); color: white; border-color: var(--accent); }
 
-    .content pre:hover .copy-btn {
-      opacity: 1; /* 悬停显示 */
-    }
-
-    .copy-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-    }
-
-    .copy-btn.copied {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-
-    /* 滚动条 */
     .content pre code::-webkit-scrollbar { height: 8px; }
     .content pre code::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
 
@@ -347,7 +383,7 @@
       .scroll-container { padding: 32px 24px; }
       .post-cover { aspect-ratio: 16/9; margin-bottom: 24px; }
       .content h1 { font-size: 1.8rem; }
-      .copy-btn { opacity: 1; /* 手机端始终显示复制按钮 */ }
+      .copy-btn { opacity: 1; }
     }
   </style>
   
@@ -355,6 +391,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
 </head>
 <body>
+
+  <div id="loading-screen">
+    <div class="loading-logo">Quarrey-Z Blog</div>
+    <div class="progress-track">
+      <div class="progress-bar"></div>
+    </div>
+    <div class="loading-status" id="loading-text">Initializing...</div>
+  </div>
+
   <div class="page">
     <header>
       <div>
@@ -400,6 +445,10 @@
     const PACK_FILE = "pack.json";
     const SUPPORTED_IMAGE_EXT = ["png", "jpg", "jpeg", "webp", "avif", "gif"];
 
+    const loadingScreen = document.getElementById("loading-screen");
+    const loadingText = document.getElementById("loading-text");
+    const pageContainer = document.querySelector(".page");
+
     const folderListEl = document.getElementById("folder-items");
     const postListEl = document.getElementById("post-items");
     const postViewEl = document.getElementById("post-view");
@@ -436,27 +485,20 @@
     // --- Marked ---
     marked.setOptions({
       breaks: true,
-      // 修复高亮：langPrefix 必须匹配 highlight.js 期待的类名格式
       langPrefix: "language-"
     });
 
-    // --- Code Processing (Highlight + Copy) ---
+    // --- Code Processing ---
     function processCodeBlocks(container) {
       const pres = Array.from(container.querySelectorAll("pre"));
-      
       pres.forEach(pre => {
-        // 1. 查找 pre 内的 code 标签
         const codeBlock = pre.querySelector("code");
         if (codeBlock) {
-          // 2. 强制添加 hljs 类（虽然 highlightElement 会加，但防万一）
           if (!codeBlock.classList.contains("hljs")) {
               codeBlock.classList.add("hljs");
           }
-          // 3. 触发高亮
           try { hljs.highlightElement(codeBlock); } catch (e) { console.warn(e); }
         }
-
-        // 4. 添加复制按钮
         const btn = document.createElement("button");
         btn.className = "copy-btn";
         btn.textContent = "Copy";
@@ -489,6 +531,9 @@
 
     async function fetchPack(path) {
       const cleanPath = normalizePath(path);
+      // Update Loading Text
+      loadingText.textContent = `Scanning: ${cleanPath}...`;
+      
       const packPath = cleanPath === "." ? `./${PACK_FILE}` : `${cleanPath}/${PACK_FILE}`;
       try {
         const res = await fetch(packPath, { cache: "no-store" });
@@ -772,6 +817,7 @@
       }
       return data;
     }
+
     function renderFolders() {
       folderListEl.innerHTML = "";
       state.folders.forEach(folder => {
@@ -884,12 +930,9 @@
       rewriteRelativeUrls(content, basePath);
       enhanceEmbeds(content);
       enhancePlainEmbeds(content);
-      
-      // === 关键修复点 ===
-      // 在 DOM 插入完成后，统一处理代码块（添加高亮 + 复制按钮）
-      processCodeBlocks(content);
-      
+      processCodeBlocks(content); // Apply Highlight + Copy
       enhanceCaptions(content);
+      
       postViewEl.appendChild(content);
       
       renderMathInElement(content, {
@@ -914,9 +957,19 @@
     }
 
     async function buildIndex() {
+      // Show Loading Screen Logic can be kept simple: CSS handles visibility
+      loadingText.textContent = "Scanning Library...";
+      
       let entries = [];
       try { entries = await loadPackTree("."); } catch (err) { entries = []; }
       
+      // Dismiss Loading Screen
+      loadingScreen.style.opacity = "0";
+      setTimeout(() => {
+        loadingScreen.style.display = "none";
+        pageContainer.classList.add("loaded");
+      }, 500);
+
       if (!entries.length) {
         postViewEl.innerHTML = `<div class="empty-state">No content found</div>`;
         return;
