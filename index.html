@@ -592,9 +592,13 @@
             const caption = link.textContent.trim();
             if (caption && caption !== href) { wrapper.dataset.caption = caption; }
             const iframe = document.createElement("iframe");
-            iframe.setAttribute("loading", "lazy"); iframe.setAttribute("allowfullscreen", "true");
-            // Fix Bilibili Referer & Autoplay
-            iframe.setAttribute("referrerpolicy", "no-referrer"); iframe.style.border = "none";
+            iframe.setAttribute("loading", "lazy");
+            iframe.setAttribute("allowfullscreen", "true");
+            iframe.setAttribute(
+              "allow",
+              "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            );
+            iframe.style.border = "none";
             if (ytId) iframe.src = `https://www.youtube.com/embed/${ytId}`;
             else if (bili) iframe.src = `https://player.bilibili.com/player.html?${bili.type}=${bili.value}&page=1&high_quality=1&danmaku=0&autoplay=0`;
             wrapper.appendChild(iframe); link.replaceWith(wrapper);
@@ -610,9 +614,14 @@
            if (!ytMatch && !biliMatch) return;
            const wrapper = document.createElement("div"); wrapper.className = "embed";
            wrapper.dataset.caption = text;
-           const iframe = document.createElement("iframe"); iframe.setAttribute("loading", "lazy"); iframe.setAttribute("allowfullscreen", "true");
-           // Fix Bilibili Referer & Autoplay
-           iframe.setAttribute("referrerpolicy", "no-referrer"); iframe.style.border = "none";
+           const iframe = document.createElement("iframe");
+           iframe.setAttribute("loading", "lazy");
+           iframe.setAttribute("allowfullscreen", "true");
+           iframe.setAttribute(
+             "allow",
+             "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+           );
+           iframe.style.border = "none";
            if (biliMatch) {
                const val = biliMatch[1];
                const type = val.startsWith("BV") ? "bvid" : "aid";
