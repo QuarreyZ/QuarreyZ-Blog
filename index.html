@@ -77,17 +77,25 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* --- Loading Splash Screen (macOS Style) --- */
+    /* --- Loading Screen (Optimized Transition) --- */
     #loading-screen {
       position: fixed;
       inset: 0;
-      background: var(--bg-app); /* 与背景同色，无缝衔接 */
+      background: var(--bg-app);
       z-index: 9999;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+      /* 关键：使用 visibility 避免占位，opacity 实现淡出 */
+      transition: opacity 0.4s ease-out, visibility 0.4s;
+    }
+
+    /* 隐藏状态 */
+    #loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .loading-logo {
@@ -100,7 +108,7 @@
 
     .progress-track {
       width: 200px;
-      height: 6px;
+      height: 4px; /* 稍微细一点，更精致 */
       background: rgba(128, 128, 128, 0.2);
       border-radius: 100px;
       overflow: hidden;
@@ -112,10 +120,10 @@
       width: 30%;
       background: var(--accent);
       border-radius: 100px;
-      /* Indeterminate Animation */
       position: absolute;
       left: 0;
-      animation: macos-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      /* 加快一点动画速度，感觉更流畅 */
+      animation: macos-progress 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
     .loading-status {
@@ -124,12 +132,12 @@
       color: var(--text-secondary);
       font-family: var(--font-mono);
       opacity: 0.8;
-      height: 1.2em; /* 占位防止跳动 */
+      height: 1.2em;
     }
 
     @keyframes macos-progress {
       0% { left: -30%; width: 30%; }
-      50% { width: 60%; }
+      50% { width: 50%; }
       100% { left: 100%; width: 30%; }
     }
 
@@ -143,12 +151,12 @@
       grid-template-columns: 280px 1fr;
       gap: 24px;
       padding: 24px;
-      /* 初始隐藏，等加载完淡入 */
-      opacity: 0; 
-      transition: opacity 0.6s ease-out;
+      /* 初始透明，等待 JS 控制显示 */
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
     }
     
-    .page.loaded {
+    .page.visible {
       opacity: 1;
     }
 
@@ -397,7 +405,7 @@
     <div class="progress-track">
       <div class="progress-bar"></div>
     </div>
-    <div class="loading-status" id="loading-text">Initializing...</div>
+    <div class="loading-status" id="loading-text">Starting...</div>
   </div>
 
   <div class="page">
@@ -482,7 +490,7 @@
         }
     });
 
-    // --- Marked ---
+    // --- Marked Config ---
     marked.setOptions({
       breaks: true,
       langPrefix: "language-"
@@ -517,7 +525,7 @@
       });
     }
 
-    // --- Data Loading ---
+    // --- Helpers ---
     function normalizePath(path) {
       const cleaned = path.replace(/\\+/g, "/").replace(/\/+$/, "");
       const withoutDot = cleaned.replace(/^\.\/+/, "");
@@ -531,9 +539,7 @@
 
     async function fetchPack(path) {
       const cleanPath = normalizePath(path);
-      // Update Loading Text
-      loadingText.textContent = `Scanning: ${cleanPath}...`;
-      
+      loadingText.textContent = `Scanning: ${cleanPath}`;
       const packPath = cleanPath === "." ? `./${PACK_FILE}` : `${cleanPath}/${PACK_FILE}`;
       try {
         const res = await fetch(packPath, { cache: "no-store" });
@@ -542,6 +548,7 @@
       } catch (err) { return null; }
     }
 
+    // --- Core Logic ---
     async function loadPackTree(path) {
       const queue = [{ path: normalizePath(path), depth: 0 }];
       const seen = new Set();
@@ -607,7 +614,7 @@
       state.preloadLinks.add(url);
     }
 
-    // --- Content Processor ---
+    // --- Embeds & Processing ---
     function resolvePath(basePath, url) {
       if (!url) return url;
       if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/")) return url;
@@ -771,7 +778,6 @@
     function groupPosts(entries) {
       const folders = new Map();
       const posts = [];
-      
       entries.forEach(entry => {
         if (entry.type === "dir") {
           const folderPath = normalizePath(entry.path);
@@ -781,21 +787,17 @@
           }
         }
       });
-
       entries.forEach(entry => {
         if (entry.type !== "file") return;
         const parts = normalizePath(entry.path).split("/");
         const fileName = parts.pop();
         const folderPath = parts.join("/") || ".";
         const folderName = folderPath.split("/").filter(Boolean).pop() || "Quarrey";
-        
         if (!folders.has(folderPath)) {
           folders.set(folderPath, { path: folderPath, name: folderName, cover: null, depth: entry.depth || 0 });
         }
-        
         posts.push({ path: normalizePath(entry.path), name: fileName.replace(/\.md$/, ""), folderPath });
       });
-
       const folderList = Array.from(folders.values()).sort((a, b) => {
         if (a.depth !== b.depth) return a.depth - b.depth;
         return a.name.localeCompare(b.name, "zh-Hans-CN");
@@ -825,12 +827,9 @@
         const isActive = state.selectedFolder === folder.path;
         item.className = "folder-item" + (isActive ? " active" : "");
         item.style.paddingLeft = `calc(12px + ${(folder.depth || 0) * 16}px)`;
-        
         item.innerHTML = `
           <img class="cover-thumb" src="${folder.cover || ""}" alt="" />
-          <div>
-            <div style="font-weight:500; font-size:0.95rem;">${folder.name}</div>
-          </div>
+          <div><div style="font-weight:500; font-size:0.95rem;">${folder.name}</div></div>
         `;
         item.addEventListener("click", () => {
           searchInput.value = ""; 
@@ -845,43 +844,25 @@
     function renderPosts() {
       postListEl.innerHTML = "";
       const query = normalizeQuery(searchInput.value);
-      
       const posts = state.posts.filter(post => {
-        const matchQuery = !query || 
-                           post.name.toLowerCase().includes(query) || 
-                           post.path.toLowerCase().includes(query);
-
-        if (query) {
-           return matchQuery;
-        } else {
-           const matchFolder = state.selectedFolder 
-             ? post.folderPath === state.selectedFolder || post.folderPath.startsWith(`${state.selectedFolder}/`)
-             : true;
-           return matchFolder;
-        }
+        const matchQuery = !query || post.name.toLowerCase().includes(query) || post.path.toLowerCase().includes(query);
+        return query ? matchQuery : (state.selectedFolder ? post.folderPath === state.selectedFolder || post.folderPath.startsWith(`${state.selectedFolder}/`) : true);
       });
-
       posts.forEach(post => {
         const item = document.createElement("div");
         const isActive = state.selectedPost && state.selectedPost.path === post.path;
         item.className = "post-item" + (isActive ? " active" : "");
-        
         item.innerHTML = `
           <img class="cover-thumb" src="${post.cover || ""}" alt="" />
           <div>
             <div style="font-weight:500; font-size:0.95rem;">${post.name}</div>
-            <div style="font-size:0.75rem; color:${isActive ? 'rgba(255,255,255,0.8)' : 'var(--text-secondary)'};">
-              ${post.folderPath === "." ? "Library" : post.folderPath.split("/").pop()}
-            </div>
+            <div style="font-size:0.75rem; color:${isActive ? 'rgba(255,255,255,0.8)' : 'var(--text-secondary)'};">${post.folderPath === "." ? "Library" : post.folderPath.split("/").pop()}</div>
           </div>
         `;
         item.addEventListener("click", () => loadPost(post));
         postListEl.appendChild(item);
       });
-
-      if (!posts.length) { 
-        postListEl.innerHTML = `<div class="empty-state" style="padding:20px;">无匹配项</div>`; 
-      }
+      if (!posts.length) { postListEl.innerHTML = `<div class="empty-state" style="padding:20px;">无匹配项</div>`; }
     }
 
     async function loadPost(post) {
@@ -889,40 +870,27 @@
       renderPosts();
       
       const markdown = await fetchMarkdown(post.path);
-      if (!markdown) {
-        postViewEl.innerHTML = `<div class="empty-state">Unable to load ${post.path}</div>`;
-        return;
-      }
+      if (!markdown) { postViewEl.innerHTML = `<div class="empty-state">Unable to load ${post.path}</div>`; return; }
 
       const basePath = post.path.split("/").slice(0, -1).join("/") || ".";
       const mediaUrls = extractMediaUrls(markdown, basePath);
-      mediaUrls.forEach(url => {
-        if (url.match(/\.(mp4|webm|mov)$/i)) ensurePreload(url, "video");
-        else ensurePreload(url, "image");
-      });
+      mediaUrls.forEach(url => { if (url.match(/\.(mp4|webm|mov)$/i)) ensurePreload(url, "video"); else ensurePreload(url, "image"); });
 
       const footnoteResult = applyFootnotes(markdown);
       const html = marked.parse(footnoteResult.markdown + "\n\n" + footnoteResult.footnotesHtml);
       
       postViewEl.innerHTML = "";
-      
       if (post.cover) {
         const img = document.createElement("img");
         img.src = post.cover;
         img.className = "post-cover";
         postViewEl.appendChild(img);
       }
-      
       const meta = document.createElement("div");
       meta.className = "post-meta";
       const folderDisplay = post.folderPath === "." ? "Library" : post.folderPath;
-      meta.innerHTML = `
-        <span class="meta-path">${folderDisplay}</span>
-        <span class="meta-sep">●</span>
-        <span class="meta-name">${post.name}</span>
-      `;
+      meta.innerHTML = `<span class="meta-path">${folderDisplay}</span><span class="meta-sep">●</span><span class="meta-name">${post.name}</span>`;
       postViewEl.appendChild(meta);
-      
       const content = document.createElement("div");
       content.className = "content";
       content.innerHTML = html;
@@ -930,19 +898,12 @@
       rewriteRelativeUrls(content, basePath);
       enhanceEmbeds(content);
       enhancePlainEmbeds(content);
-      processCodeBlocks(content); // Apply Highlight + Copy
+      processCodeBlocks(content);
       enhanceCaptions(content);
       
       postViewEl.appendChild(content);
       
-      renderMathInElement(content, {
-        delimiters: [
-          { left: "$$", right: "$$", display: true },
-          { left: "\\(", right: "\\)", display: false },
-          { left: "$", right: "$", display: false }
-        ],
-        throwOnError: false
-      });
+      renderMathInElement(content, { delimiters: [ { left: "$$", right: "$$", display: true }, { left: "\\(", right: "\\)", display: false }, { left: "$", right: "$", display: false } ], throwOnError: false });
     }
 
     async function fetchMarkdown(path) {
@@ -956,36 +917,40 @@
       } catch (err) { return null; }
     }
 
+    // --- MAIN INIT ---
     async function buildIndex() {
-      // Show Loading Screen Logic can be kept simple: CSS handles visibility
-      loadingText.textContent = "Scanning Library...";
+      // 1. Start: Loading is visible by default in HTML
       
       let entries = [];
       try { entries = await loadPackTree("."); } catch (err) { entries = []; }
-      
-      // Dismiss Loading Screen
-      loadingScreen.style.opacity = "0";
-      setTimeout(() => {
-        loadingScreen.style.display = "none";
-        pageContainer.classList.add("loaded");
-      }, 500);
-
-      if (!entries.length) {
-        postViewEl.innerHTML = `<div class="empty-state">No content found</div>`;
-        return;
-      }
       
       const grouped = groupPosts(entries);
       const enriched = await enrichCovers(grouped);
       state.folders = enriched.folders;
       state.posts = enriched.posts;
-      
       state.selectedFolder = state.folders[0] ? state.folders[0].path : null;
       
       renderFolders();
       renderPosts();
       
-      if (state.posts[0]) { loadPost(state.posts[0]); }
+      // 2. Preload First Post logic
+      if (state.posts[0]) { 
+        loadingText.textContent = "Rendering...";
+        // Await the first post to be fully rendered
+        await loadPost(state.posts[0]);
+      }
+      
+      // 3. DONE: Hide Loading Screen
+      // Slight buffer to ensure DOM is painted
+      requestAnimationFrame(() => {
+          loadingScreen.classList.add("hidden");
+          pageContainer.classList.add("visible");
+          
+          // Completely remove from DOM after transition
+          setTimeout(() => {
+             loadingScreen.style.display = 'none';
+          }, 500);
+      });
     }
 
     searchInput.addEventListener("input", () => renderPosts());
