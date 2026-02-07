@@ -52,6 +52,7 @@ quarrey-z 的博客（纯前端静态站点）
   例如：`posts/__assets/first.jpg` → `posts/first.md` 的封面
 - **目录封面**：在同级目录的 `__assets/` 中，若存在与目录同名的图片文件，即作为该目录封面。  
   例如：`posts/__assets/posts.png` → `posts/` 的封面
+- **注意: 最高级别的文件夹虽然是 . 但是封面用 Library.png**
 
 支持的封面格式：`png`、`jpg`、`jpeg`、`webp`、`avif`、`gif`
 
