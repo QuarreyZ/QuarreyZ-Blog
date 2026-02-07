@@ -1,4 +1,9 @@
 {
-  "dic": ["Test File"],
-  "blog": ["README.md", "Test Blog 1.md"]
+  "dic": [
+    "Test File"
+  ],
+  "blog": [
+    "README.md",
+    "Test Blog 1.md"
+  ]
 }

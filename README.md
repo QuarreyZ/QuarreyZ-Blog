@@ -89,6 +89,19 @@ posts/
 - 在 `posts/` 内创建 `first.md`、`second.md`。
 - 对应素材放在 `posts/__assets/`。
 
+### 4. 自动生成 pack.json（脚本）
+仓库根目录提供了脚本 `generate-pack.sh`，用于递归生成每一级的 `pack.json`。
+```bash
+./generate-pack.sh
+```
+说明：
+- 会覆盖已有 `pack.json`。
+- 默认跳过 `.git`、`node_modules`、`__assets`。
+如需保留已存在的 `pack.json`，使用：
+```bash
+./generate-pack.sh --skip-existing
+```
+
 ## Markdown 语法说明（详尽）
 
 ### 1. 标题
