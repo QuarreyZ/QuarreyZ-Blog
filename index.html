@@ -705,7 +705,7 @@
        blocks.forEach(block => {
            if (block.querySelector("a, img, video, iframe")) return;
            const text = block.textContent.trim();
-           const ytMatch = text.match(/\b([0-9A-Za-z_-]{11})\b/) || (text.length===11? [null, text]: null);
+           const ytMatch = text.match(/\b([0-9A-Za-z_-]{11})\b/);
            const biliMatch = text.match(/\b(BV[0-9A-Za-z]{10})\b/) || text.match(/\bav(\d+)\b/i);
            if (!ytMatch && !biliMatch) return;
            const wrapper = document.createElement("div"); wrapper.className = "embed";
