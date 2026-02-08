@@ -160,7 +160,10 @@
     }
     .folder-item:hover, .post-item:hover { background-color: var(--bg-app); }
     .folder-item.active, .post-item.active { background-color: var(--accent); color: white; box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25); }
-    .folder-item.active *, .post-item.active * { color: white !important; fill: white !important; }
+    .folder-item.active .item-title,
+    .post-item.active .item-title,
+    .folder-item.active .item-subtitle,
+    .post-item.active .item-subtitle { color: white !important; }
 
     .folder-spinner {
       width: 16px; height: 16px; border: 2px solid var(--text-tertiary);
@@ -176,13 +179,25 @@
       background: var(--bg-app); border: 1px solid var(--separator); flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
     }
-    .icon-placeholder { width: 20px; height: 20px; fill: var(--text-secondary); opacity: 0.7; }
+    .cover-thumb.placeholder {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 96 96'><rect x='12' y='12' width='72' height='72' rx='22' fill='%23eef1f5'/><path d='M37 37c0-6.1 4.9-11 11-11s11 4.9 11 11c0 5.2-3.9 8.1-6.8 10.3-2.1 1.5-3.7 2.8-3.7 5.7v3.2' stroke='%239aa3b2' stroke-width='4.8' fill='none' stroke-linecap='round'/><circle cx='48' cy='68' r='3.8' fill='%239aa3b2'/></svg>");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 70% 70%;
+    }
 
     /* --- Main Content --- */
     main.panel { grid-row: 2; padding: 0; background: var(--bg-card); box-shadow: var(--shadow-card); position: relative; display: flex; flex-direction: column; overflow: hidden; }
     .scroll-container { height: 100%; overflow-y: auto; padding: 48px 64px 80px; -webkit-overflow-scrolling: touch; }
 
     .post-cover { width: 100%; aspect-ratio: 2.4/1; object-fit: cover; border-radius: var(--radius-l); margin-bottom: 40px; box-shadow: var(--shadow-cover); display: block; border: 1px solid var(--separator); }
+    .post-cover.full { aspect-ratio: auto; object-fit: contain; background: var(--bg-app); }
+    .post-cover.placeholder {
+      background-color: var(--bg-app);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 96px 96px;
+    }
     .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--separator); font-family: var(--font-display); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em; color: var(--text-secondary); text-transform: uppercase; }
     .meta-path { color: var(--text-secondary); } .meta-name { color: var(--text-primary); } .meta-sep { color: var(--text-tertiary); font-size: 0.6em; }
     
@@ -347,8 +362,7 @@
     const SUPPORTED_IMAGE_EXT = ["png", "jpg", "jpeg", "webp", "avif", "gif"];
 
     // Icons
-    const ICON_FOLDER = `<svg class="icon-placeholder" viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>`;
-    const ICON_FILE = `<svg class="icon-placeholder" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`;
+    const DEFAULT_Q_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'><rect x='12' y='12' width='72' height='72' rx='22' fill='%23eef1f5'/><path d='M37 37c0-6.1 4.9-11 11-11s11 4.9 11 11c0 5.2-3.9 8.1-6.8 10.3-2.1 1.5-3.7 2.8-3.7 5.7v3.2' stroke='%239aa3b2' stroke-width='4.8' fill='none' stroke-linecap='round'/><circle cx='48' cy='68' r='3.8' fill='%239aa3b2'/></svg>";
 
     const loadingScreen = document.getElementById("loading-screen");
     const loadingText = document.getElementById("loading-text");
@@ -543,11 +557,11 @@
         
         const thumbContent = folder.cover 
             ? `<img class="cover-thumb" src="${folder.cover}" alt="" />`
-            : `<div class="cover-thumb">${ICON_FOLDER}</div>`;
+            : `<div class="cover-thumb placeholder"></div>`;
 
         item.innerHTML = `
           ${thumbContent}
-          <div style="flex:1; font-weight:500; font-size:0.95rem;">${folder.name}</div>
+          <div class="item-title" style="flex:1; font-weight:500; font-size:0.95rem;">${folder.name}</div>
           <div class="folder-spinner"></div>
         `;
         
@@ -585,13 +599,13 @@
         
         const thumbContent = post.cover 
             ? `<img class="cover-thumb" src="${post.cover}" alt="" />`
-            : `<div class="cover-thumb">${ICON_FILE}</div>`;
+            : `<div class="cover-thumb placeholder"></div>`;
 
         item.innerHTML = `
           ${thumbContent}
           <div>
-            <div style="font-weight:500; font-size:0.95rem;">${post.name}</div>
-            <div style="font-size:0.75rem; color:${isActive ? 'rgba(255,255,255,0.8)' : 'var(--text-secondary)'};">
+            <div class="item-title" style="font-weight:500; font-size:0.95rem;">${post.name}</div>
+            <div class="item-subtitle" style="font-size:0.75rem; color:${isActive ? 'rgba(255,255,255,0.8)' : 'var(--text-secondary)'};">
               ${post.folderPath === "." ? "Library" : post.folderPath.split("/").pop()}
             </div>
           </div>
@@ -700,32 +714,7 @@
             wrapper.appendChild(iframe); link.replaceWith(wrapper);
         });
     }
-    function enhancePlainEmbeds(container) {
-       const blocks = Array.from(container.querySelectorAll("p, li"));
-       blocks.forEach(block => {
-           if (block.querySelector("a, img, video, iframe")) return;
-           const text = block.textContent.trim();
-           const ytMatch = text.match(/\b([0-9A-Za-z_-]{11})\b/);
-           const biliMatch = text.match(/\b(BV[0-9A-Za-z]{10})\b/) || text.match(/\bav(\d+)\b/i);
-           if (!ytMatch && !biliMatch) return;
-           const wrapper = document.createElement("div"); wrapper.className = "embed";
-           wrapper.dataset.caption = text;
-           const iframe = document.createElement("iframe");
-           iframe.setAttribute("loading", "lazy");
-           iframe.setAttribute("allowfullscreen", "true");
-           iframe.setAttribute(
-             "allow",
-             "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-           );
-           iframe.style.border = "none";
-           if (biliMatch) {
-               const val = biliMatch[1];
-               const type = val.startsWith("BV") ? "bvid" : "aid";
-               iframe.src = `https://player.bilibili.com/player.html?${type}=${val}&page=1&high_quality=1&danmaku=0&autoplay=0`;
-           } else if (ytMatch) iframe.src = `https://www.youtube.com/embed/${ytMatch[1]}`;
-           wrapper.appendChild(iframe); block.replaceWith(wrapper);
-       });
-    }
+    function enhancePlainEmbeds(container) {}
     function extractYouTubeId(url) {
         try { const u = new URL(url); if(u.hostname==="youtu.be")return u.pathname.slice(1); if(u.hostname.includes("youtube.com")){if(u.pathname==="/watch")return u.searchParams.get("v");if(u.pathname.startsWith("/embed/"))return u.pathname.split("/embed/")[1];if(u.pathname.startsWith("/shorts/"))return u.pathname.split("/shorts/")[1];} }catch(e){} return null;
     }
@@ -740,6 +729,23 @@
             cap.textContent = caption; img.parentNode.replaceChild(fig, img); fig.appendChild(img); fig.appendChild(cap);
         }
       });
+    }
+
+    function extractFrontSettings(markdown) {
+      const match = markdown.match(/^\s*<!--([\s\S]*?)-->\s*/);
+      if (!match) return { settings: null, cleaned: markdown };
+      const raw = match[1].trim();
+      if (!raw) return { settings: null, cleaned: markdown.replace(match[0], "") };
+      let jsonText = raw;
+      if (!raw.trim().startsWith("{")) {
+        jsonText = `{${raw}}`;
+      }
+      try {
+        const parsed = JSON.parse(jsonText);
+        return { settings: parsed, cleaned: markdown.replace(match[0], "") };
+      } catch (err) {
+        return { settings: null, cleaned: markdown.replace(match[0], "") };
+      }
     }
 
     async function fetchMarkdown(path) {
@@ -759,17 +765,28 @@
       
       const markdown = await fetchMarkdown(post.path);
       if (!markdown) { postViewEl.innerHTML = `<div class="empty-state">Unable to load ${post.path}</div>`; return; }
+      const front = extractFrontSettings(markdown);
+      const frontSettings = front.settings && front.settings.setting ? front.settings.setting : {};
+      const contentMarkdown = front.cleaned;
 
       const basePath = post.path.split("/").slice(0, -1).join("/") || ".";
       const mediaUrls = extractMediaUrls(markdown, basePath);
       mediaUrls.forEach(url => { if (url.match(/\.(mp4|webm|mov)$/i)) ensurePreload(url, "video"); else ensurePreload(url, "image"); });
 
-      const footnoteResult = applyFootnotes(markdown);
+      const footnoteResult = applyFootnotes(contentMarkdown);
       const html = marked.parse(footnoteResult.markdown + "\n\n" + footnoteResult.footnotesHtml);
       
       postViewEl.innerHTML = "";
       if (post.cover) {
-        const img = document.createElement("img"); img.src = post.cover; img.className = "post-cover"; postViewEl.appendChild(img);
+        const img = document.createElement("img");
+        img.src = post.cover;
+        img.className = "post-cover" + (frontSettings.iffull ? " full" : "");
+        postViewEl.appendChild(img);
+      } else {
+        const placeholder = document.createElement("div");
+        placeholder.className = "post-cover placeholder";
+        placeholder.style.backgroundImage = `url(${DEFAULT_Q_SVG})`;
+        postViewEl.appendChild(placeholder);
       }
       const meta = document.createElement("div"); meta.className = "post-meta";
       const folderDisplay = post.folderPath === "." ? "Library" : post.folderPath;
@@ -777,15 +794,31 @@
       postViewEl.appendChild(meta);
       
       const content = document.createElement("div"); content.className = "content"; content.innerHTML = html;
+      if (frontSettings["background-color"]) {
+        content.style.backgroundColor = frontSettings["background-color"];
+        content.style.borderRadius = "16px";
+        content.style.padding = "20px";
+      }
+      if (frontSettings["font-color"]) {
+        content.style.color = frontSettings["font-color"];
+        content.style.setProperty("--katex-color", frontSettings["font-color"]);
+        content.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach(el => {
+          el.style.color = frontSettings["font-color"];
+        });
+      }
       
       rewriteRelativeUrls(content, basePath);
       enhanceEmbeds(content);
-      enhancePlainEmbeds(content);
       processCodeBlocks(content);
       enhanceCaptions(content);
       
       postViewEl.appendChild(content);
       renderMathInElement(content, { delimiters: [ { left: "$$", right: "$$", display: true }, { left: "\\(", right: "\\)", display: false }, { left: "$", right: "$", display: false } ], throwOnError: false });
+      if (frontSettings["font-color"]) {
+        content.querySelectorAll(".katex").forEach(el => {
+          el.style.color = frontSettings["font-color"];
+        });
+      }
     }
 
     // --- Init ---

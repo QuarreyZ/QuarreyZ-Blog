@@ -190,3 +190,20 @@ https://www.bilibili.com/video/BV1xx411c7mD
 
 [^1]: 这里是脚注内容。
 ```
+
+## Markdown 级别的 Setting（可选）
+在 Markdown 文件最开始写 HTML 注释，内容为类 JSON（可不写最外层 `{}`）：
+```md
+<!--
+"setting":{
+  "iffull": true,
+  "background-color": "#f8f9fb",
+  "font-color": "#222222"
+}
+-->
+```
+
+字段说明：
+- `iffull`: `true` 时封面图完整显示（contain），`false` 或不写保持默认裁切。
+- `background-color`: 仅影响 Markdown 显示区域的背景色。
+- `font-color`: 仅影响 Markdown 显示区域文字颜色，同时作用于 KaTeX 公式。
