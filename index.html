@@ -789,11 +789,6 @@
         img.src = post.cover;
         img.className = "post-cover" + (frontSettings.iffull ? " full" : "");
         postViewEl.appendChild(img);
-      } else {
-        const placeholder = document.createElement("div");
-        placeholder.className = "post-cover placeholder";
-        placeholder.style.backgroundImage = `url(${DEFAULT_Q_SVG})`;
-        postViewEl.appendChild(placeholder);
       }
       const meta = document.createElement("div"); meta.className = "post-meta";
       const folderDisplay = post.folderPath === "." ? "Library" : post.folderPath;
