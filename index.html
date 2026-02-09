@@ -770,6 +770,14 @@
       state.selectedPost = post;
       renderPosts();
       
+      if (!post.cover) {
+        const cover = await findCover(post.folderPath, post.name);
+        if (cover) {
+          post.cover = cover;
+          ensurePreload(cover, "image");
+        }
+      }
+
       const markdown = await fetchMarkdown(post.path);
       if (!markdown) { postViewEl.innerHTML = `<div class="empty-state">Unable to load ${post.path}</div>`; return; }
       const front = extractFrontSettings(markdown);
