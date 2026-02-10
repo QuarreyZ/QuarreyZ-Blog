@@ -213,6 +213,12 @@
 
     /* Code Blocks */
     .content pre { position: relative; background: var(--bg-code); border: 1px solid var(--border-code); padding: 20px; border-radius: var(--radius-m); overflow-x: auto; margin: 2em 0; font-family: var(--font-mono); font-size: 0.92em; line-height: 1.55; color: #abb2bf; }
+
+    /* Tables */
+    .content table { width: 100%; border-collapse: collapse; margin: 1.6em 0; font-size: 0.95em; }
+    .content thead th { text-align: left; font-weight: 600; color: var(--text-primary); background: var(--bg-app); }
+    .content th, .content td { padding: 10px 12px; border: 1px solid var(--separator); }
+    .content tbody tr:nth-child(2n) { background: rgba(0,0,0,0.02); }
     .content pre code.hljs { display: block; background: transparent; padding: 0; }
     .copy-btn { position: absolute; top: 12px; right: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.6); font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-family: var(--font-main); transition: all 0.2s; opacity: 0; }
     .content pre:hover .copy-btn { opacity: 1; }
@@ -354,6 +360,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
   <script>
@@ -639,6 +646,13 @@
       pres.forEach(pre => {
         const codeBlock = pre.querySelector("code");
         if (codeBlock) {
+          if (codeBlock.classList.contains("language-mermaid") || codeBlock.classList.contains("mermaid")) {
+            const mermaidDiv = document.createElement("div");
+            mermaidDiv.className = "mermaid";
+            mermaidDiv.textContent = codeBlock.textContent;
+            pre.replaceWith(mermaidDiv);
+            return;
+          }
           if (!codeBlock.classList.contains("hljs")) codeBlock.classList.add("hljs");
           try { hljs.highlightElement(codeBlock); } catch (e) {}
         }
@@ -828,6 +842,10 @@
         content.querySelectorAll(".katex").forEach(el => {
           el.style.color = frontSettings["font-color"];
         });
+      }
+      if (window.mermaid) {
+        mermaid.initialize({ startOnLoad: false });
+        mermaid.run({ nodes: content.querySelectorAll(".mermaid") });
       }
     }
 

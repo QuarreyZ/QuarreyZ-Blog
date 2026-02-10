@@ -191,6 +191,17 @@ https://www.bilibili.com/video/BV1xx411c7mD
 [^1]: 这里是脚注内容。
 ```
 
+### 12. Mermaid（流程图/时序图等）
+写法示例：
+````md
+```mermaid
+graph TD
+  A[Start] --> B{Decision}
+  B -->|Yes| C[Do it]
+  B -->|No| D[Stop]
+```
+````
+
 ## Markdown 级别的 Setting（可选）
 在 Markdown 文件最开始写 HTML 注释，内容为类 JSON（可不写最外层 `{}`）：
 ```md
